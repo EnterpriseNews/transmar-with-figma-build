@@ -15,7 +15,7 @@ The Transmar home page (regional container shipping line: services, track and sc
 | `docs/figma-notes/` | per-section notes: exact copy, node ids, sizes (read these before calling Figma) |
 | `docs/design/` | reference screenshots, `<screen>--<width>.png` and `sections/<section>--<width>.png` |
 | `docs/content-model.md` | the CONTENT markers for each section |
-| `docs/content-guide.md` | the guide for editors |
+| `docs/content-guide.md` | the guide for editors (added later, #20) |
 | `docs/review-lessons.md` | rules learned during the build; read before coding |
 
 ## Commands
@@ -35,17 +35,17 @@ transmar-with-figma-build/
     index.html                 the page; all content between CONTENT markers; inline SVG icon sprite
     css/styles.css             all styles; tokens are the --… variables under :root
     js/script.js               all behaviours, one classic script, one `// ===== <name> =====` part each
-    images/<section>/          key-visual, services, industries, glance, map, news, social
-    images/site/               logo, logo-white, favicons, og-image
+    images/<section>/          key-visual, services, industries, glance, map, news, social (added by #7)
+    images/site/               logo, logo-white, favicons, og-image (added by #7)
     images/ASSETS.md           every image: file, size, Figma node, where used
     fonts/OFL.txt              the font licence (font embedded in styles.css)
-    robots.txt, sitemap.xml, README.md
+    robots.txt, sitemap.xml    static; the real domain is added by hand when known
+    README.md                  for whoever opens the folder: view, edit, deploy
   docs/                        design-analysis.md, design.md, figma-notes/, design/, content-model.md,
-                               content-guide.md, review-lessons.md, adr/
+                               review-lessons.md, adr/; content-guide.md (added later, #20)
   CLAUDE.md, README.md
   .editorconfig, .gitattributes, .gitignore
 ```
-(Completed by issue #1.)
 
 ## Rules
 - Use only the tokens and breakpoints in `docs/design.md` (the `--…` variables in `css/styles.css` and its media queries).
