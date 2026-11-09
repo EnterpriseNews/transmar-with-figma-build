@@ -90,7 +90,7 @@ Colour note: Figma's style named "Primary/900" is #243666, which is the value of
 - **Assets:**
   | Asset | Source node | Export | Target |
   |---|---|---|---|
-  | Pager arrow (uil:arrow-up, rotated −90° for prev and +90° for next) | frame 2589:8720 (vector 2589:8721); next 2589:8723 | svg (one arrow, rotate in CSS) | `transmar/images/icons/arrow-up.svg` (sprite symbol `icon-arrow-up`) |
+  | Pager arrow (uil:arrow-up, rotated −90° for prev and +90° for next) | frame 2589:8720 (vector 2589:8721); next 2589:8723 | svg (one arrow, rotate in CSS) | sprite symbol `icon-arrow-left` (the export points left; built by #7) |
 - **Interactions/states:** no prototype interactions on the bar. Implied: prev/next arrows cycle through advisories and update "n/10"; "Read more" links to the current advisory (target not defined → `#`). No hover/disabled states drawn.
 - **Differences between breakpoints:** desktop is one row (title grows, link and pager at the right); mobile stacks text over a space-between row of link + pager. 1920 has no side padding on the 1440-wide bar.
 

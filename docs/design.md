@@ -56,7 +56,7 @@ Mobile-first: base styles are mobile; `@media (width >= 768px)` (tablet) and `@m
 ## Images
 - One file per image in `images/<section>/`, about 2x the desktop display size, WebP; listed in `images/ASSETS.md`.
 - `width`/`height` = the file's pixel size; `loading="lazy" decoding="async"` below the fold; the key-visual image eager with `fetchpriority="high"`.
-- UI icons (search, menu, close, arrows, alert, service, glance and footer social icons): symbols of the inline sprite at the top of `<body>`, `currentColor`. Logos, decorative shapes, the map and the LinkedIn badge are image files.
+- UI icons (search, menu, close, arrows, alert, service, glance and footer social icons): symbols of the inline sprite at the top of `<body>`, `currentColor`. Logos, decorative shapes, the map and the LinkedIn badge are image files, except the header logo, which is the sprite symbol `logo` (`currentColor`: white at the top, Primary/500 when scrolled).
 
 ## Content
 - All editable content between `<!-- CONTENT: <section> <field> -->` / `<!-- /CONTENT -->` markers named in `docs/content-model.md`; never in CSS or JS.
