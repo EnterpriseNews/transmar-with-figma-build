@@ -27,7 +27,7 @@ Marker names are `<section> <field>` as listed below. Repeated items have one ma
 | `footer tagline` | mobile-only tagline paragraph | hidden from 768 (Decision 6) |
 | `footer social-link` | ×5: icon + visually hidden name + URL (LinkedIn, Facebook, X, YouTube, Instagram) | LinkedIn external, others `#` |
 | `footer media` | "For media inquiries, please contact **media@transmar.com**" | `mailto:` |
-| `footer column` | ×2: title + 3 links (Quick Links: Our Story, Our Containers, Services; Get to Know Us: Latest News, Careers, Contact us) | → `#`. The title's `id` and the list's `aria-labelledby` must match and be unique: give a copied column a new `id` |
+| `footer column` | ×2: title + 3 links (Quick Links: Our Story, Our Containers, Services; Get to Know Us: Latest News, Careers, Contact us) | → `#`. The title's `id` and the list's `aria-labelledby` must match and be unique: give a copied column a new `id`. Columns sit inside `.site-footer__columns`; add or remove them there, any number works (two to a row on mobile, wrapping at the end from 768) |
 | `footer copyright` | "©2023 Transmar. All Rights Reserved" | |
 
 ## Sections (Figma: [Home page](https://www.figma.com/design/q8JHAesVFNMeDI8MaMAi7w/?node-id=842-1027))
