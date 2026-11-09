@@ -193,14 +193,640 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <!-- /CONTENT -->
 
-  <!-- ===== SECTION: Header and side menu (issue #9) ===== -->
-  <header id="site-header"></header>
+  <!-- ===== SECTION: Header ===== -->
+  <header id="site-header" class="site-header" data-header>
+    <div class="site-header__inner container">
+      <!-- CONTENT: header logo -->
+      <a class="site-header__logo" href="#top"><svg class="icon site-header__logo-icon" width="179" height="25" aria-hidden="true" focusable="false"><use href="#logo"></use></svg><span class="visually-hidden">Transmar</span></a>
+      <!-- /CONTENT -->
+      <nav class="site-nav" aria-label="Main">
+        <ul class="site-nav__list" role="list">
+          <!-- CONTENT: header nav -->
+          <li class="site-nav__item"><a class="site-nav__link" href="#">About Us</a></li>
+          <li class="site-nav__item"><a class="site-nav__link" href="#">Services</a></li>
+          <li class="site-nav__item"><a class="site-nav__link" href="#">Media</a></li>
+          <li class="site-nav__item"><a class="site-nav__link" href="#">Careers</a></li>
+          <li class="site-nav__item"><a class="site-nav__link" href="#">Our Local Offices</a></li>
+          <!-- /CONTENT -->
+        </ul>
+      </nav>
+      <div class="site-header__actions">
+        <!-- CONTENT: header language -->
+        <a class="site-header__language" href="#">EN</a>
+        <!-- /CONTENT -->
+        <!-- CONTENT: header search -->
+        <a class="site-header__search" href="#"><svg class="icon" width="21" height="21" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg><span class="visually-hidden">Search</span></a>
+        <!-- /CONTENT -->
+        <!-- CONTENT: header menu-button -->
+        <button class="site-header__menu-button" type="button" data-menu-button aria-controls="site-menu" aria-expanded="false" data-label-open="Open menu" data-label-close="Close menu"><svg class="icon" width="25" height="21" aria-hidden="true" focusable="false"><use href="#icon-menu"></use></svg><span class="visually-hidden" data-menu-button-label>Open menu</span></button>
+        <!-- /CONTENT -->
+      </div>
+    </div>
+  </header>
 
   <main id="main" tabindex="-1">
-    <!-- The sections, in Figma order, are added by issue #8. -->
+    <!-- ===== SECTION: Key visual and track banner ===== -->
+    <section id="top" class="key-visual" aria-labelledby="top-title" data-header-trigger>
+      <!-- CONTENT: key-visual image -->
+      <picture class="key-visual__picture">
+        <source media="(width > 1440px)" srcset="images/key-visual/kv-wide.webp" width="3182" height="1496">
+        <source media="(width >= 768px)" srcset="images/key-visual/kv-desktop.webp" width="2880" height="1496">
+        <img class="key-visual__image" src="images/key-visual/kv-mobile.webp" width="750" height="1636" alt="" fetchpriority="high">
+      </picture>
+      <!-- /CONTENT -->
+      <div class="track-banner container">
+        <div class="track-banner__heading">
+          <!-- CONTENT: track-banner title -->
+          <h1 id="top-title" class="track-banner__title"><span class="track-banner__title-line track-banner__title-line--1">Your Gateway</span><br><span class="track-banner__title-line track-banner__title-line--2">to Regional Trade</span></h1>
+          <!-- /CONTENT -->
+          <!-- CONTENT: track-banner slogan -->
+          <p class="track-banner__slogan">Serving the Red Sea and the Middle East Since <strong>1979</strong></p>
+          <!-- /CONTENT -->
+        </div>
+        <div class="track-card" data-tabs>
+          <div class="track-card__tabs" role="tablist">
+            <!-- CONTENT: track-banner tabs -->
+            <button class="track-card__tab" id="track-tab" type="button" role="tab" aria-selected="true" aria-controls="track-panel">Track</button>
+            <button class="track-card__tab" id="schedule-tab" type="button" role="tab" aria-selected="false" aria-controls="schedule-panel" tabindex="-1">Schedule</button>
+            <!-- /CONTENT -->
+          </div>
+
+          <div class="track-card__panel" id="track-panel" role="tabpanel" aria-labelledby="track-tab">
+            <form class="track-form" action="#" data-validate>
+              <fieldset class="track-form__by">
+                <!-- CONTENT: track-banner track-by -->
+                <legend class="track-form__legend">Track By:</legend>
+                <div class="track-form__options">
+                  <label class="radio"><input class="radio__input" type="radio" name="track-by" value="container-number" checked><span class="radio__label">Container Number</span></label>
+                  <label class="radio"><input class="radio__input" type="radio" name="track-by" value="booking-number"><span class="radio__label">Booking Number</span></label>
+                  <label class="radio"><input class="radio__input" type="radio" name="track-by" value="bl-number"><span class="radio__label">BL Number</span></label>
+                </div>
+                <!-- /CONTENT -->
+              </fieldset>
+              <div class="track-form__row">
+                <div class="field track-form__field">
+                  <!-- CONTENT: track-banner track-field -->
+                  <label class="field__label visually-hidden" for="tracking-number">Tracking number</label>
+                  <input class="field__input" id="tracking-number" name="tracking-number" type="text" placeholder="Tracking number" autocomplete="off" required aria-describedby="tracking-number-error">
+                  <!-- /CONTENT -->
+                  <p class="field__error" id="tracking-number-error" data-field-error></p>
+                </div>
+                <!-- CONTENT: track-banner track-button -->
+                <button class="btn btn--primary track-form__submit" type="submit">Track</button>
+                <!-- /CONTENT -->
+              </div>
+            </form>
+          </div>
+
+          <div class="track-card__panel" id="schedule-panel" role="tabpanel" aria-labelledby="schedule-tab">
+            <form class="track-form track-form--schedule" action="#" data-validate>
+              <div class="track-form__grid">
+                <div class="field">
+                  <!-- CONTENT: track-banner schedule-field -->
+                  <label class="field__label visually-hidden" for="origin-port">Origin port</label>
+                  <input class="field__input" id="origin-port" name="origin-port" type="text" placeholder="Origin port" autocomplete="off" required aria-describedby="origin-port-error">
+                  <!-- /CONTENT -->
+                  <p class="field__error" id="origin-port-error" data-field-error></p>
+                </div>
+                <div class="field">
+                  <!-- CONTENT: track-banner schedule-field -->
+                  <label class="field__label visually-hidden" for="destination-port">Destination port</label>
+                  <input class="field__input" id="destination-port" name="destination-port" type="text" placeholder="Destination port" autocomplete="off" required aria-describedby="destination-port-error">
+                  <!-- /CONTENT -->
+                  <p class="field__error" id="destination-port-error" data-field-error></p>
+                </div>
+                <div class="field">
+                  <!-- CONTENT: track-banner schedule-field -->
+                  <label class="field__label visually-hidden" for="search-date">Search date</label>
+                  <input class="field__input" id="search-date" name="search-date" type="date" placeholder="Search date" aria-describedby="search-date-error">
+                  <!-- /CONTENT -->
+                  <p class="field__error" id="search-date-error" data-field-error></p>
+                </div>
+                <div class="field">
+                  <!-- CONTENT: track-banner schedule-field -->
+                  <label class="field__label visually-hidden" for="weeks-out">Weeks out</label>
+                  <input class="field__input" id="weeks-out" name="weeks-out" type="number" min="1" step="1" inputmode="numeric" placeholder="Weeks out" aria-describedby="weeks-out-error">
+                  <!-- /CONTENT -->
+                  <p class="field__error" id="weeks-out-error" data-field-error></p>
+                </div>
+              </div>
+              <!-- CONTENT: track-banner schedule-button -->
+              <button class="btn btn--primary track-form__submit track-form__submit--wide" type="submit">View Schedule</button>
+              <!-- /CONTENT -->
+            </form>
+          </div>
+
+          <!-- CONTENT: track-banner errors -->
+          <div hidden data-validate-messages data-label-required="Please fill in this field." data-label-invalid-date="Please enter a valid date." data-label-weeks-out="Enter 1 or more weeks."></div>
+          <!-- /CONTENT -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: Services ===== -->
+    <section id="services" class="services" aria-labelledby="services-title">
+      <div class="services__inner container">
+        <div class="section-head section-head--dark services__head">
+          <!-- CONTENT: services eyebrow -->
+          <p class="section-head__eyebrow">Services</p>
+          <!-- /CONTENT -->
+          <!-- CONTENT: services title -->
+          <h2 id="services-title" class="section-head__title">Connecting You to the Region’s Top Economies</h2>
+          <!-- /CONTENT -->
+          <div class="services__paragraphs">
+            <!-- CONTENT: services paragraph -->
+            <p class="section-head__text">For more than four decades, Transmar has established itself as the leading regional shipping partner.</p>
+            <!-- /CONTENT -->
+            <!-- CONTENT: services paragraph -->
+            <p class="section-head__text">We understand the fundamental impact shipping has on global trade and recognize the crucial role our operations play in connecting markets, industries, and consumers well beyond the limits of national borders. By facilitating the movement of cargo, we actively participate in the growth of economies, contribute to the development of global supply chains, and help foster global economic integration.</p>
+            <!-- /CONTENT -->
+            <!-- CONTENT: services paragraph -->
+            <p class="section-head__text">Our expansive network of partnerships, affiliations, and our direct presence in the MENA region’s most prominent ports in Egypt, UAE, KSA, India, Pakistan, Sudan, Jordan, Yemen, Kuwait, Iraq, Qatar, and Djibouti provide our customers with the global know-how and the local on-ground expertise they need to ensure their cargo arrives to its destination safely and efficiently.</p>
+            <!-- /CONTENT -->
+          </div>
+        </div>
+        <ul class="services__list" role="list">
+          <!-- CONTENT: services item -->
+          <li class="services__list-item"><a class="service-item" href="#"><svg class="icon service-item__icon" width="63" height="50" aria-hidden="true" focusable="false"><use href="#icon-service-fleet-cargo"></use></svg><span class="service-item__label">Fleet &amp; Cargo</span></a></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: services item -->
+          <li class="services__list-item"><a class="service-item" href="#"><svg class="icon service-item__icon" width="63" height="50" aria-hidden="true" focusable="false"><use href="#icon-service-schedule"></use></svg><span class="service-item__label">Schedule</span></a></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: services item -->
+          <li class="services__list-item"><a class="service-item" href="#"><svg class="icon service-item__icon" width="63" height="50" aria-hidden="true" focusable="false"><use href="#icon-service-vessel-fleet"></use></svg><span class="service-item__label">Vessel Fleet</span></a></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: services item -->
+          <li class="services__list-item"><a class="service-item" href="#"><svg class="icon service-item__icon" width="63" height="50" aria-hidden="true" focusable="false"><use href="#icon-service-terminals"></use></svg><span class="service-item__label">Terminals</span></a></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: services item -->
+          <li class="services__list-item"><a class="service-item" href="#"><svg class="icon service-item__icon" width="63" height="50" aria-hidden="true" focusable="false"><use href="#icon-service-integrated"></use></svg><span class="service-item__label">Integrated Solutions</span></a></li>
+          <!-- /CONTENT -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: Customer advisory ===== -->
+    <section id="advisory" class="advisory" aria-labelledby="advisory-title">
+      <div class="advisory__inner container" data-pager>
+        <!-- CONTENT: advisory label -->
+        <h2 id="advisory-title" class="advisory__label">Customer Advisory</h2>
+        <!-- /CONTENT -->
+        <ul class="advisory__items" role="list">
+          <!-- CONTENT: advisory item -->
+          <li class="advisory__item" data-pager-item>
+            <h3 class="advisory__title">COVID-19 Service Disruption</h3>
+            <a class="advisory__link" href="#">Read more<span class="visually-hidden">: COVID-19 Service Disruption</span></a>
+          </li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: advisory item -->
+          <li class="advisory__item" data-pager-item>
+            <h3 class="advisory__title">Red Sea / Gulf of Aden situation</h3>
+            <a class="advisory__link" href="#">Read more<span class="visually-hidden">: Red Sea / Gulf of Aden situation</span></a>
+          </li>
+          <!-- /CONTENT -->
+        </ul>
+        <div class="pager">
+          <!-- CONTENT: advisory pager -->
+          <button class="pager__button pager__button--prev" type="button" data-pager-prev><svg class="icon pager__icon" width="12" height="13" aria-hidden="true" focusable="false"><use href="#icon-arrow-left"></use></svg><span class="visually-hidden">Previous advisory</span></button>
+          <span class="pager__count" data-pager-count aria-live="polite"></span>
+          <button class="pager__button pager__button--next" type="button" data-pager-next><svg class="icon pager__icon" width="12" height="13" aria-hidden="true" focusable="false"><use href="#icon-arrow-left"></use></svg><span class="visually-hidden">Next advisory</span></button>
+          <!-- /CONTENT -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: Industries ===== -->
+    <section id="industries" class="industries" aria-labelledby="industries-title">
+      <div class="industries__inner container">
+        <div class="section-head industries__head">
+          <!-- CONTENT: industries eyebrow -->
+          <p class="section-head__eyebrow">INDUSTRIES</p>
+          <!-- /CONTENT -->
+          <!-- CONTENT: industries title -->
+          <h2 id="industries-title" class="section-head__title">We’re the Commodity Experts</h2>
+          <!-- /CONTENT -->
+          <!-- CONTENT: industries text -->
+          <p class="section-head__text">Our commodity expertise and regional network allows us to design tailored solutions for customers across multiple industries including:</p>
+          <!-- /CONTENT -->
+        </div>
+        <div class="carousel industries__carousel" data-carousel>
+          <ul class="carousel__track" role="list" data-carousel-track>
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/petrochemicals.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Petrochemicals</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/building-materials.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Building Materials</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/food-products.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Food Products</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/agri-products.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Agri Products</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/fmcg.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">FMCG</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/fresh-produce.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Fresh produce</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/paper-products.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Paper Products</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/textiles.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Textiles</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/home-appliances.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Home Appliances</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: industries card -->
+            <li class="carousel__item"><a class="industry-card" href="#"><img class="industry-card__image" src="images/industries/pharmaceuticals.webp" width="606" height="372" alt="" loading="lazy" decoding="async"><span class="industry-card__title">Pharmaceuticals</span><svg class="icon industry-card__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a></li>
+            <!-- /CONTENT -->
+          </ul>
+          <div class="carousel__controls">
+            <!-- CONTENT: industries carousel -->
+            <button class="carousel__button carousel__button--prev" type="button" data-carousel-prev><svg class="icon carousel__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg><span class="visually-hidden">Previous industries</span></button>
+            <button class="carousel__button carousel__button--next" type="button" data-carousel-next><svg class="icon carousel__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg><span class="visually-hidden">Next industries</span></button>
+            <!-- /CONTENT -->
+          </div>
+        </div>
+        <!-- CONTENT: industries cta -->
+        <a class="arrow-link industries__cta" href="#">View all industries<svg class="icon arrow-link__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a>
+        <!-- /CONTENT -->
+      </div>
+    </section>
+
+    <!-- ===== SECTION: Transmar at a Glance ===== -->
+    <section id="glance" class="glance" aria-labelledby="glance-title">
+      <div class="glance__inner container">
+        <div class="section-head section-head--dark glance__head">
+          <!-- CONTENT: glance eyebrow -->
+          <p class="section-head__eyebrow">About us</p>
+          <!-- /CONTENT -->
+          <!-- CONTENT: glance title -->
+          <h2 id="glance-title" class="section-head__title">Transmar at a Glance</h2>
+          <!-- /CONTENT -->
+          <!-- CONTENT: glance text -->
+          <p class="section-head__text">With 45 years of keeping promises to our customers, our track record and growth trajectory speaks for itself.</p>
+          <!-- /CONTENT -->
+        </div>
+        <ul class="glance__stats" role="list">
+          <!-- CONTENT: glance stat -->
+          <li class="stat-card"><svg class="icon stat-card__icon" width="56" height="56" aria-hidden="true" focusable="false"><use href="#icon-glance-ship"></use></svg><span class="stat-card__number">3.2 mn</span> <span class="stat-card__label">Tons shipped</span></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: glance stat -->
+          <li class="stat-card"><svg class="icon stat-card__icon" width="56" height="56" aria-hidden="true" focusable="false"><use href="#icon-glance-containers"></use></svg><span class="stat-card__number">23,000</span> <span class="stat-card__label">TEU Fleet size containers</span></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: glance stat -->
+          <li class="stat-card"><svg class="icon stat-card__icon" width="56" height="56" aria-hidden="true" focusable="false"><use href="#icon-glance-employees"></use></svg><span class="stat-card__number">535</span> <span class="stat-card__label">Employees</span></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: glance stat -->
+          <li class="stat-card"><svg class="icon stat-card__icon" width="56" height="56" aria-hidden="true" focusable="false"><use href="#icon-glance-equipment"></use></svg><span class="stat-card__number">208</span> <span class="stat-card__label">Stevedoring equipment</span></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: glance stat -->
+          <li class="stat-card"><svg class="icon stat-card__icon" width="56" height="56" aria-hidden="true" focusable="false"><use href="#icon-glance-storage"></use></svg><span class="stat-card__number">70,000 m²</span> <span class="stat-card__label">Storage spaces</span></li>
+          <!-- /CONTENT -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: Regional presence map ===== -->
+    <section id="map" class="map" aria-labelledby="map-title">
+      <div class="map__inner container container--wide">
+        <div class="section-head map__head">
+          <!-- CONTENT: map eyebrow -->
+          <p class="section-head__eyebrow">Routes</p>
+          <!-- /CONTENT -->
+          <!-- CONTENT: map title -->
+          <h2 id="map-title" class="section-head__title">Our Regional<br>Presence</h2>
+          <!-- /CONTENT -->
+          <!-- CONTENT: map routes -->
+          <p class="map__routes">Currently Operating <strong>17</strong> Regional Routes</p>
+          <!-- /CONTENT -->
+        </div>
+        <div class="map__figure">
+          <!-- CONTENT: map image -->
+          <img class="map__image" src="images/map/regional-presence.svg" width="987" height="671" alt="Map of Transmar’s regional presence: Egypt, Sudan, Djibouti, Kenya, Yemen, Oman, the UAE, Qatar, Bahrain, Kuwait, Iraq, Saudi Arabia, Jordan, Turkey, Pakistan, India and Vietnam." loading="lazy" decoding="async">
+          <!-- /CONTENT -->
+          <ul class="map__labels" role="list">
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 26.6%; --y: 18.7%">Turkey</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 34.4%; --y: 29.2%">Iraq</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 25.7%; --y: 30.7%">Jordan</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 37.1%; --y: 33.8%">Kuwait</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 61.2%; --y: 34.4%">Pakistan</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 20.5%; --y: 38.9%">Egypt</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 43.4%; --y: 40.5%">Qatar</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 35.6%; --y: 42.9%">Saudi<br>Arabia</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 45.1%; --y: 43.7%">UAE</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 70.0%; --y: 46.0%">India</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 93.8%; --y: 49.6%">Vietnam</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 48.3%; --y: 50.5%">Oman</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 38.7%; --y: 56.5%">Yemen</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 20.4%; --y: 57.1%">Sudan</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 31.4%; --y: 62.3%">Djibouti</li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: map label -->
+            <li class="map__label" style="--x: 28.7%; --y: 78.9%">Kenya</li>
+            <!-- /CONTENT -->
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: News & Insights ===== -->
+    <section id="news" class="news" aria-labelledby="news-title">
+      <div class="news__inner container">
+        <div class="section-head section-head--center news__head">
+          <!-- CONTENT: news title -->
+          <h2 id="news-title" class="section-head__title">Transmar News &amp; Insights</h2>
+          <!-- /CONTENT -->
+          <!-- CONTENT: news subtitle -->
+          <p class="section-head__text">Unveiling the Latest Headlines, Stay Ahead of the Curve!</p>
+          <!-- /CONTENT -->
+        </div>
+        <div class="carousel news__carousel" data-carousel>
+          <ul class="carousel__track news__list" role="list" data-carousel-track>
+            <!-- CONTENT: news card -->
+            <li class="carousel__item"><a class="news-card" href="#"><img class="news-card__image" src="images/news/news-reefer-egypt-yemen.webp" width="768" height="416" alt="The EFG Hermes headquarters building" loading="lazy" decoding="async"><h3 class="news-card__title">Transmar Kicks Off New Reefer Service Connecting Egypt to Yemen</h3><time class="news-card__date" datetime="2023-07">July 2023</time></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: news card -->
+            <li class="carousel__item"><a class="news-card" href="#"><img class="news-card__image" src="images/news/news-cso-panel.webp" width="826" height="448" alt="A Transmar container ship alongside the quay" loading="lazy" decoding="async"><h3 class="news-card__title">Transmar CSO, Nada El Ahwal Participates in Panel Discussion on Industrial Clusters at Enterprise Exports and FDI Forum</h3><time class="news-card__date" datetime="2023-05">May 2023</time></a></li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: news card -->
+            <li class="carousel__item"><a class="news-card" href="#"><img class="news-card__image" src="images/news/news-efg-finance.webp" width="360" height="195" alt="Container cranes against a blue sky" loading="lazy" decoding="async"><h3 class="news-card__title">Transmar Signs USD 25 mn Cargo Vessel Finance Deal with EFG Hermes Corp Solutions</h3><time class="news-card__date" datetime="2022-02">February 2022</time></a></li>
+            <!-- /CONTENT -->
+          </ul>
+          <div class="carousel__controls">
+            <!-- CONTENT: news carousel -->
+            <button class="carousel__button carousel__button--prev" type="button" data-carousel-prev><svg class="icon carousel__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg><span class="visually-hidden">Previous news</span></button>
+            <button class="carousel__button carousel__button--next" type="button" data-carousel-next><svg class="icon carousel__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg><span class="visually-hidden">Next news</span></button>
+            <!-- /CONTENT -->
+          </div>
+        </div>
+        <!-- CONTENT: news link -->
+        <a class="arrow-link news__link" href="#">View all News<svg class="icon arrow-link__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></a>
+        <!-- /CONTENT -->
+      </div>
+    </section>
+
+    <!-- ===== SECTION: Social News ===== -->
+    <section id="social" class="social" aria-labelledby="social-title">
+      <div class="social__inner container">
+        <div class="section-head social__head">
+          <!-- CONTENT: social title -->
+          <h2 id="social-title" class="section-head__title">Social News</h2>
+          <!-- /CONTENT -->
+        </div>
+        <div class="carousel social__carousel" data-carousel>
+          <ul class="carousel__track" role="list" data-carousel-track>
+            <!-- CONTENT: social card -->
+            <li class="carousel__item">
+              <article class="social-card">
+                <div class="social-card__header">
+                  <img class="social-card__avatar" src="images/social/avatar-transmar.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                  <p class="social-card__name">Transmar</p>
+                  <img class="social-card__badge" src="images/social/linkedin-badge.svg" width="32" height="32" alt="LinkedIn" loading="lazy" decoding="async">
+                </div>
+                <img class="social-card__image" src="images/social/post-plastex-visit.webp" width="672" height="440" alt="Transmar staff talking with a visitor at the Transmar stand, Silver Sponsor of PLASTEX" loading="lazy" decoding="async">
+                <p class="social-card__text">Visit <a href="https://www.linkedin.com/company/transmarline/" target="_blank" rel="noopener noreferrer">Transmar<span class="visually-hidden"> (opens in a new tab)</span></a> at PLASTEX 2024 - MENA's largest plastics and rubber exhibition for internationally renowned materials....</p>
+                <a class="social-card__link" href="#">Read more<span class="visually-hidden">: Visit Transmar at PLASTEX 2024</span></a>
+              </article>
+            </li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: social card -->
+            <li class="carousel__item">
+              <article class="social-card">
+                <div class="social-card__header">
+                  <img class="social-card__avatar" src="images/social/avatar-transmar.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                  <p class="social-card__name">Transmar</p>
+                  <img class="social-card__badge" src="images/social/linkedin-badge.svg" width="32" height="32" alt="LinkedIn" loading="lazy" decoding="async">
+                </div>
+                <img class="social-card__image" src="images/social/post-transmar-partners.webp" width="474" height="310" alt="A loaded Transmar container ship at sea" loading="lazy" decoding="async">
+                <p class="social-card__text"><a href="https://www.linkedin.com/feed/hashtag/?keywords=transmarpartners&amp;highlightedUpdateUrns=urn%3Ali%3Aactivity%3A7154072607284211712" target="_blank" rel="noopener noreferrer">#TransmarPartners<span class="visually-hidden"> (opens in a new tab)</span></a>: <a href="https://www.linkedin.com/in/ACoAAACrDGYB3Li-SEtRPI7-SSMVZWvKahFn_lM" target="_blank" rel="noopener noreferrer">Asif Iftekhar Ahmed Butt<span class="visually-hidden"> (opens in a new tab)</span></a> Boasting one of the most diverse portfolios in MENA, the UAE-based <a href="https://www.linkedin.com/company/multi-trade-limited-fzc-sharjah/" target="_blank" rel="noopener noreferrer">Multi Trade Limited FZC<span class="visually-hidden"> (opens in a new tab)</span></a> sits at the pinnacle of</p>
+                <a class="social-card__link" href="#">Read more<span class="visually-hidden">: #TransmarPartners, Multi Trade Limited FZC</span></a>
+              </article>
+            </li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: social card -->
+            <li class="carousel__item">
+              <article class="social-card">
+                <div class="social-card__header">
+                  <img class="social-card__avatar" src="images/social/avatar-transmar.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                  <p class="social-card__name">Transmar</p>
+                  <img class="social-card__badge" src="images/social/linkedin-badge.svg" width="32" height="32" alt="LinkedIn" loading="lazy" decoding="async">
+                </div>
+                <img class="social-card__image" src="images/social/post-plastex-sponsor.webp" width="672" height="440" alt="Guests in conversation on the Transmar stand at PLASTEX 2024" loading="lazy" decoding="async">
+                <p class="social-card__text">Honored to be a sponsor of <a href="https://www.linkedin.com/company/plastex2024/" target="_blank" rel="noopener noreferrer">PLASTEX 2024<span class="visually-hidden"> (opens in a new tab)</span></a>, Transmar has been at the centre of conversation, as we invite industry leaders and valued partners to engage in meaningful dialogue and explore how we can empower businesses to achieve sustainable success.</p>
+                <a class="social-card__link" href="#">Read more<span class="visually-hidden">: Honored to be a sponsor of PLASTEX 2024</span></a>
+              </article>
+            </li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: social card -->
+            <li class="carousel__item">
+              <article class="social-card">
+                <div class="social-card__header">
+                  <img class="social-card__avatar" src="images/social/avatar-transmar.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                  <p class="social-card__name">Transmar</p>
+                  <img class="social-card__badge" src="images/social/linkedin-badge.svg" width="32" height="32" alt="LinkedIn" loading="lazy" decoding="async">
+                </div>
+                <img class="social-card__image" src="images/social/post-plastex-sponsor.webp" width="672" height="440" alt="Guests in conversation on the Transmar stand at PLASTEX 2024" loading="lazy" decoding="async">
+                <p class="social-card__text">Honored to be a sponsor of <a href="https://www.linkedin.com/company/plastex2024/" target="_blank" rel="noopener noreferrer">PLASTEX 2024<span class="visually-hidden"> (opens in a new tab)</span></a>, Transmar has been at the centre of conversation, as we invite industry leaders and valued partners to engage in meaningful dialogue and explore how we can empower businesses to achieve sustainable success.</p>
+                <a class="social-card__link" href="#">Read more<span class="visually-hidden">: Honored to be a sponsor of PLASTEX 2024</span></a>
+              </article>
+            </li>
+            <!-- /CONTENT -->
+            <!-- CONTENT: social card -->
+            <li class="carousel__item">
+              <article class="social-card">
+                <div class="social-card__header">
+                  <img class="social-card__avatar" src="images/social/avatar-transmar.webp" width="80" height="80" alt="" loading="lazy" decoding="async">
+                  <p class="social-card__name">Transmar</p>
+                  <img class="social-card__badge" src="images/social/linkedin-badge.svg" width="32" height="32" alt="LinkedIn" loading="lazy" decoding="async">
+                </div>
+                <img class="social-card__image" src="images/social/post-plastex-sponsor.webp" width="672" height="440" alt="Guests in conversation on the Transmar stand at PLASTEX 2024" loading="lazy" decoding="async">
+                <p class="social-card__text">Honored to be a sponsor of <a href="https://www.linkedin.com/company/plastex2024/" target="_blank" rel="noopener noreferrer">PLASTEX 2024<span class="visually-hidden"> (opens in a new tab)</span></a>, Transmar has been at the centre of conversation, as we invite industry leaders and valued partners to engage in meaningful dialogue and explore how we can empower businesses to achieve sustainable success.</p>
+                <a class="social-card__link" href="#">Read more<span class="visually-hidden">: Honored to be a sponsor of PLASTEX 2024</span></a>
+              </article>
+            </li>
+            <!-- /CONTENT -->
+          </ul>
+          <div class="carousel__controls">
+            <!-- CONTENT: social carousel -->
+            <button class="carousel__button carousel__button--prev" type="button" data-carousel-prev><svg class="icon carousel__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg><span class="visually-hidden">Previous posts</span></button>
+            <button class="carousel__button carousel__button--next" type="button" data-carousel-next><svg class="icon carousel__icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg><span class="visually-hidden">Next posts</span></button>
+            <!-- /CONTENT -->
+          </div>
+        </div>
+        <!-- CONTENT: social link -->
+        <a class="arrow-link social__link" href="https://www.linkedin.com/company/transmarline/" target="_blank" rel="noopener noreferrer">Visit Our Linkedin Page &amp; Stay Updated<span class="visually-hidden"> (opens in a new tab)</span><svg class="icon arrow-link__icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="#icon-arrow-up-right"></use></svg></a>
+        <!-- /CONTENT -->
+      </div>
+    </section>
   </main>
 
-  <!-- ===== SECTION: Footer (issue #9) ===== -->
-  <footer id="site-footer"></footer>
+  <!-- ===== SECTION: Footer ===== -->
+  <footer id="site-footer" class="site-footer">
+    <div class="site-footer__inner container container--wide">
+      <div class="site-footer__brand">
+        <!-- CONTENT: footer logo -->
+        <a class="site-footer__logo" href="#top"><img class="site-footer__logo-image" src="images/site/logo-white.svg" width="160" height="23" alt="Transmar" loading="lazy" decoding="async"></a>
+        <!-- /CONTENT -->
+        <!-- CONTENT: footer tagline -->
+        <p class="site-footer__tagline">a leading regional containerized cargo shipping company, providing fast and reliable logistics solutions for a growing customer base of businesses that span the Middle East and the East Coast of Africa.</p>
+        <!-- /CONTENT -->
+        <ul class="site-footer__social" role="list">
+          <!-- CONTENT: footer social-link -->
+          <li><a class="site-footer__social-link" href="https://www.linkedin.com/company/transmarline/" target="_blank" rel="noopener noreferrer"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-linkedin"></use></svg><span class="visually-hidden">LinkedIn (opens in a new tab)</span></a></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: footer social-link -->
+          <li><a class="site-footer__social-link" href="#"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg><span class="visually-hidden">Facebook</span></a></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: footer social-link -->
+          <li><a class="site-footer__social-link" href="#"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg><span class="visually-hidden">X</span></a></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: footer social-link -->
+          <li><a class="site-footer__social-link" href="#"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-youtube"></use></svg><span class="visually-hidden">YouTube</span></a></li>
+          <!-- /CONTENT -->
+          <!-- CONTENT: footer social-link -->
+          <li><a class="site-footer__social-link" href="#"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-instagram"></use></svg><span class="visually-hidden">Instagram</span></a></li>
+          <!-- /CONTENT -->
+        </ul>
+        <!-- CONTENT: footer media -->
+        <p class="site-footer__media">For media inquiries, please contact <a href="mailto:media@transmar.com"><strong>media@transmar.com</strong></a></p>
+        <!-- /CONTENT -->
+      </div>
+      <!-- CONTENT: footer column -->
+      <div class="site-footer__column">
+        <h2 id="footer-quick-links" class="site-footer__title">Quick Links</h2>
+        <ul class="site-footer__links" role="list" aria-labelledby="footer-quick-links">
+          <li><a class="site-footer__link" href="#">Our Story</a></li>
+          <li><a class="site-footer__link" href="#">Our Containers</a></li>
+          <li><a class="site-footer__link" href="#">Services</a></li>
+        </ul>
+      </div>
+      <!-- /CONTENT -->
+      <!-- CONTENT: footer column -->
+      <div class="site-footer__column">
+        <h2 id="footer-get-to-know-us" class="site-footer__title">Get to Know Us</h2>
+        <ul class="site-footer__links" role="list" aria-labelledby="footer-get-to-know-us">
+          <li><a class="site-footer__link" href="#">Latest News</a></li>
+          <li><a class="site-footer__link" href="#">Careers</a></li>
+          <li><a class="site-footer__link" href="#">Contact us</a></li>
+        </ul>
+      </div>
+      <!-- /CONTENT -->
+      <!-- CONTENT: footer copyright -->
+      <p class="site-footer__copyright">©2023 Transmar. All Rights Reserved</p>
+      <!-- /CONTENT -->
+    </div>
+  </footer>
+
+  <!-- ===== SECTION: Red Sea alert ===== -->
+  <section id="alert" class="alert" aria-labelledby="alert-title" data-alert>
+    <div class="alert__inner container">
+      <div class="alert__content">
+        <svg class="icon alert__icon" width="66" height="66" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+        <div class="alert__text">
+          <!-- CONTENT: alert title -->
+          <h2 id="alert-title" class="alert__title">Red Sea / Gulf of Aden situation</h2>
+          <!-- /CONTENT -->
+          <!-- CONTENT: alert text -->
+          <p class="alert__body">Stay up to date with our latest information, vessel contingency and updates here.</p>
+          <!-- /CONTENT -->
+        </div>
+        <!-- CONTENT: alert button -->
+        <a class="btn btn--light alert__button" href="#">Learn More</a>
+        <!-- /CONTENT -->
+      </div>
+      <!-- CONTENT: alert close -->
+      <button class="btn btn--ghost alert__close" type="button" data-alert-close aria-label="Close alert">Close<svg class="icon" width="16" height="16" aria-hidden="true" focusable="false"><use href="#icon-close-circle"></use></svg></button>
+      <!-- /CONTENT -->
+    </div>
+  </section>
+
+  <!-- ===== SECTION: Side menu ===== -->
+  <!-- Without JS this menu is plain content at the end of the page; the `menu` script (#9) makes
+    it a dialog (role="dialog", aria-modal, its name from the nav's label) and hides it until opened. -->
+  <div class="site-menu__overlay" data-menu-overlay></div>
+  <div id="site-menu" class="site-menu">
+    <!-- CONTENT: menu close -->
+    <button class="site-menu__close" type="button" data-menu-close><svg class="icon" width="26" height="26" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg><span class="visually-hidden">Close menu</span></button>
+    <!-- /CONTENT -->
+    <nav class="site-menu__nav" aria-label="Menu">
+      <!-- CONTENT: menu group -->
+      <div class="menu-group">
+        <h2 id="menu-group-about" class="menu-group__title">About us</h2>
+        <ul class="menu-group__list" role="list" aria-labelledby="menu-group-about">
+          <li><a class="menu-group__link" href="#">Transmar Group</a></li>
+          <li><a class="menu-group__link" href="#">Our leadership principles</a></li>
+          <li><a class="menu-group__link" href="#">Our History</a></li>
+          <li><a class="menu-group__link" href="#">Leadership</a></li>
+          <li><a class="menu-group__link" href="#">CEO Message</a></li>
+          <li><a class="menu-group__link" href="#">Industries We Serve</a></li>
+          <li><a class="menu-group__link" href="#">Sustainability at Transmar</a></li>
+        </ul>
+      </div>
+      <!-- /CONTENT -->
+      <!-- CONTENT: menu group -->
+      <div class="menu-group">
+        <h2 id="menu-group-services" class="menu-group__title">Services</h2>
+        <ul class="menu-group__list" role="list" aria-labelledby="menu-group-services">
+          <li><a class="menu-group__link" href="#">Schedule</a></li>
+          <li><a class="menu-group__link" href="#">Containers</a></li>
+          <li><a class="menu-group__link" href="#">Terminals</a></li>
+          <li><a class="menu-group__link" href="#">Fleet</a></li>
+          <li><a class="menu-group__link" href="#">Cargo</a></li>
+          <li><a class="menu-group__link" href="#">End-to-End Services</a></li>
+          <li><a class="menu-group__link" href="#">Digital Solutions</a></li>
+        </ul>
+      </div>
+      <!-- /CONTENT -->
+      <!-- CONTENT: menu group -->
+      <div class="menu-group">
+        <h2 id="menu-group-media" class="menu-group__title">Media</h2>
+        <ul class="menu-group__list" role="list" aria-labelledby="menu-group-media">
+          <li><a class="menu-group__link" href="#">Latest News</a></li>
+          <li><a class="menu-group__link" href="#">Publications</a></li>
+        </ul>
+      </div>
+      <!-- /CONTENT -->
+      <ul class="site-menu__links" role="list">
+        <!-- CONTENT: menu links -->
+        <li><a class="site-menu__link" href="#">Contact Us</a></li>
+        <li><a class="site-menu__link" href="#">Find Our Local Offices</a></li>
+        <li><a class="site-menu__link" href="#">Join Our Team</a></li>
+        <li><a class="site-menu__link" href="#">FAQs</a></li>
+        <!-- /CONTENT -->
+      </ul>
+    </nav>
+  </div>
 </body>
 </html>
