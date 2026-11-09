@@ -24,7 +24,7 @@ Mobile-first: base styles are mobile; `@media (width >= 768px)` (tablet) and `@m
   Font: Plus Jakarta Sans 300/400/700 (stand-in for ADPortsGroup, Decision 5), embedded in `css/styles.css` as a base64 woff2 `data:` URL (works from `file://`), `font-display: swap`; licence in `fonts/OFL.txt`. Inter/Helvetica layers use the same font.
 - Spacing: only the scale (`--spacing: 4px` → `calc(var(--spacing) * n)`, half steps allowed). Map each Figma gap to the nearest step, never to a rounder shared value (29 → 28; 89.4 header → 90).
 - Radius: `--radius-xs` 4 · `-sm` 8 · `-md` 10 · `-lg` 20 · `-xl` 24 · `-drawer` 40 (start side only) · `-full`. Shadow: `--shadow-card` (track card only). Blur: `--blur-alert`. Borders: `--border-thin` 1px · `--border-rail` 1.5px · `--border-rail-active` 3px.
-- Motion `--duration-fast` 150ms · `--duration-grow` 600ms · `--duration-drawer` 300ms · `--ease-in-out` · `--ease-out`; z-index `--z-alert` < `--z-header` < `--z-menu`; `--header-height` (62 mobile, 70 mobile scrolled, 90 desktop); `--container-max`, `--container-padding`, `--container-padding-wide`: tokens only.
+- Motion `--duration-fast` 150ms · `--duration-grow` 600ms · `--duration-drawer` 300ms · `--ease-in-out` · `--ease-out`; z-index `--z-alert` < `--z-header` < `--z-menu`; `--header-height` (62 mobile, 70 mobile scrolled, 90 desktop); `--container-max`, `--container-padding`, `--container-padding-wide`: tokens only. `--focus-color`: the focus-ring colour, an alias of a colour token (see Shared patterns → Focus).
 
 ## Code style
 - HTML: one `<section>` per Figma section in Figma order with a banner comment `<!-- ===== SECTION: Name ===== -->`, its `id` (`top`, `services`, `advisory`, `industries`, `glance`, `map`, `news`, `social`, `alert`) and `aria-labelledby`. Header is `<header id="site-header">`, footer `<footer id="site-footer">`, menu `#site-menu`. BEM classes. No utility-class framework.
@@ -42,14 +42,14 @@ Mobile-first: base styles are mobile; `@media (width >= 768px)` (tablet) and `@m
 
 ## Shared patterns
 - Reuse the shared classes and script parts: `.container`, `.section-head`, `.btn` (+ `--primary`, `--light`, `--ghost`), `.arrow-link`, `.icon`, header, menu, footer, `[data-tabs]`, `[data-carousel]`, `[data-pager]`, `[data-validate]`, `[data-alert]`, `[data-header]`. A new variant is a BEM modifier, not a copy.
-- Focus: visible 2px `--color-primary-500` outline, 2px offset (`--color-white` on dark sections: services, glance, footer, alert, header top state) on every interactive element; hover per Figma (services items, side-menu items), otherwise a colour or underline change; touch targets at least 44×44px below desktop.
+- Focus: visible 2px outline in `--focus-color`, 2px offset, on every interactive element (one `:focus-visible` rule in the base styles). `--focus-color` is an alias, never a new value: `var(--color-primary-500)` under `:root`, redefined to `var(--color-white)` only on the root element of a dark block (services, glance, footer, alert, and the header in its top state). Nothing else sets it: no component, inner element or other section; hover per Figma (services items, side-menu items), otherwise a colour or underline change; touch targets at least 44×44px below desktop.
 - External links: new tab, `rel="noopener noreferrer"`, visually hidden "(opens in a new tab)". Links to other pages and undefined links go to `#` (Decision 17).
 - WAI-ARIA patterns for tabs (track form), the menu dialog, carousels and the advisory pager.
 
 ## Animation
 - Only: hover/focus colour transitions (`--duration-fast`); services item hover enlargement on desktop (icon 63×50 → 73×58, label `service-item` → `service-item-hover`, `--duration-grow` `--ease-in-out`); header top → scrolled colour change and side-menu slide/fade (`--duration-drawer`).
 - No count-up numbers, no scroll reveal, no carousel autoplay.
-- `prefers-reduced-motion: reduce` → final state, no movement.
+- `prefers-reduced-motion: reduce` → final state, no movement. It works by setting the `--duration-*` tokens to 0.01ms, so every transition and animation must take its duration from a `--duration-*` token (and `scroll-behavior: smooth`, if used, must sit inside `@media (prefers-reduced-motion: no-preference)`).
 - Content is never hidden without JS: hidden states (non-first advisory items, inactive tab panel, closed menu, dismissed alert) only under `.js` on `<html>` (set by the inline head script, removed again if `js/script.js` fails).
 - Animate only `transform` and `opacity` (and colour on hover); the services label size change is done with `transform: scale`, not by animating `font-size`.
 

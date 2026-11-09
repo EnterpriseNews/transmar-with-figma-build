@@ -169,7 +169,7 @@ Gradients are built from colour tokens: services fade `--color-navy` → transpa
 
 ### Mapping
 
-All tokens become custom properties under `:root` in `transmar/css/styles.css` (`--color-*`, `--font-sans`, `--text-*` (each as `-size`, `-line-height`, `-weight` parts plus a mobile/desktop override), `--spacing`, `--radius-*`, `--shadow-*`, `--blur-*`, `--border-*`, `--duration-*`, `--ease-*`, `--z-*`, `--header-height`, `--container-*`, `--breakpoint-*`). Total: 22 colour, 1 font, 26 text styles, 1 spacing, 7 radius, 1 shadow, 1 blur, 3 border, 5 motion, 3 z-index, 1 header height, 3 container, 2 breakpoints = **76 tokens**.
+All tokens become custom properties under `:root` in `transmar/css/styles.css` (`--color-*`, `--font-sans`, `--text-*` (each as `-size`, `-line-height`, `-weight` parts plus a mobile/desktop override), `--spacing`, `--radius-*`, `--shadow-*`, `--blur-*`, `--border-*`, `--duration-*`, `--ease-*`, `--z-*`, `--header-height`, `--container-*`, `--breakpoint-*`, `--focus-color`). Total: 22 colour, 1 font, 26 text styles, 1 spacing, 7 radius, 1 shadow, 1 blur, 3 border, 5 motion, 3 z-index, 1 header height, 3 container, 2 breakpoints, 1 focus colour = **77 tokens**. `--focus-color` (added by #6) is an alias, not a new value: `var(--color-primary-500)`, redefined to `var(--color-white)` only on the root element of the dark blocks (services, glance, footer, alert, header top state); see `docs/design.md` → Shared patterns → Focus.
 
 ## Shared components
 
@@ -294,7 +294,10 @@ Everything the design leaves open, decided without asking (defaults in the plugi
 ## Build decisions and deviations
 Deliberate differences from Figma and why (added during the build).
 
-none yet
+- **SEO title and description (#6).** The design has no page title or meta description, so they are written from the key-visual copy (A §3): title "Transmar | Your Gateway to Regional Trade"; description "Transmar is your gateway to regional trade: container shipping serving the Red Sea and the Middle East since 1979." The same text is used for `og:title`/`og:description` and `twitter:title`/`twitter:description`. Canonical, `og:url`, `og:image` and `twitter:image` wait in a `TODO(content)` comment in the `seo meta` marker until the domain is known. Why: the slogan is the site's own one-line summary; no wording is invented beyond "container shipping" (the brief's description of the company).
+- **Font file (#6).** Plus Jakarta Sans is embedded as the Fontsource **variable** latin subset (one woff2, 27.3 KB, weights 300–700 from one `@font-face`) instead of three static files (36.3 KB together). Why: smaller, and it renders the same three weights.
+- **Skip link (#6).** A "Skip to main content" link (marker `header skip-link`), not in the design, is the first focusable element; it stays off screen until it gets keyboard focus. Why: accessibility (WCAG 2.4.1).
+- **Reduced motion (#6).** `prefers-reduced-motion: reduce` sets the three `--duration-*` tokens to 0.01ms rather than forcing `transition-duration` on every element with `!important`. Why: every transition must read the duration tokens anyway, and the rules forbid new `!important`.
 
 ## Design updates
 One subsection per later Figma revision: `### <YYYY-MM-DD>: <what changed>` with the frames, a summary of changes per section, new decisions, and the issues created for it.

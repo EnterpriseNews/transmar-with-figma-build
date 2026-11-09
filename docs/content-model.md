@@ -14,6 +14,7 @@ Marker names are `<section> <field>` as listed below. Repeated items have one ma
 | Marker | Contains | Notes |
 |---|---|---|
 | `seo meta` | `<title>`, description, Open Graph/Twitter | canonical and image URLs wait in a TODO comment until the domain is known |
+| `header skip-link` | the "Skip to main content" link to `#main` | first focusable element on the page, before `<header>`; visible only on keyboard focus |
 | `header logo` | logo SVG in a link to `#top`, with the accessible name "Transmar" | white at the top, Primary/500 when scrolled (`currentColor`) |
 | `header nav` | the 5 nav links: About Us, Services, Media, Careers, Our Local Offices (→ `#`) | desktop only; hidden below 768 |
 | `header language` | "EN" link (→ `#`) | Decision 2 |

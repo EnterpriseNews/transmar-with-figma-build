@@ -1,0 +1,14 @@
+# figma-build working files (screenshots, token dumps, caches)
+.figma-build/
+.claude/worktrees/
+.playwright-mcp/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+
+*.log
