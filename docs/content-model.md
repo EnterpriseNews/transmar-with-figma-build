@@ -16,7 +16,7 @@ Marker names are `<section> <field>` as listed below. Repeated items have one ma
 | `seo meta` | `<title>`, description, Open Graph/Twitter | canonical and image URLs wait in a TODO comment until the domain is known |
 | `header skip-link` | the "Skip to main content" link to `#main` | first focusable element on the page, before `<header>`; visible only on keyboard focus |
 | `header logo` | logo SVG in a link to `#top`, with the accessible name "Transmar" | white at the top, Primary/500 when scrolled (`currentColor`) |
-| `header nav` | the 5 nav links: About Us, Services, Media, Careers, Our Local Offices (→ `#`) | desktop only; hidden below 768 |
+| `header nav` | the 5 nav links: About Us, Services, Media, Careers, Our Local Offices (→ `#`) | from 1200 only; hidden below 1200 (docs/design.md → Breakpoints, Exception #9); every target is also in the side menu |
 | `header language` | "EN" link (→ `#`) | Decision 2 |
 | `header search` | search link (→ `#`) with visually hidden label "Search" | |
 | `header menu-button` | burger `<button>` with `data-label-open="Open menu"` and `data-label-close="Close menu"`, and its visually hidden name "Open menu" (`data-menu-button-label`) | all widths; the `menu` script swaps the hidden name from the two `data-label-*` values |
@@ -49,8 +49,8 @@ The tables above are the full list of marker names. A marker name not listed her
 ## Hooks for behaviour (not content)
 | Hook | Where | Used by (`js/script.js` part) |
 |---|---|---|
-| `data-header`, `data-header-trigger` (on `#top`) | header, key visual | `header-scroll`: adds `is-scrolled` once `#top` leaves the viewport |
-| `data-menu-button`, `data-menu-button-label`, `#site-menu`, `data-menu-close`, `data-menu-overlay` | header, side menu | `menu`: open/close, Esc, focus trap and return, scroll lock; at init adds `role="dialog"` and `aria-modal="true"` to `#site-menu` and names it from the inner `<nav aria-label="Menu">` |
+| `data-header`, `data-header-trigger` (on `#top`) | header, key visual | `header-scroll`: adds `is-scrolled` to the header (and `is-header-scrolled` to `<html>`, which sets the 70px mobile `--header-height`) once the bottom of `#top` has passed under the header; removes them on scrolling back up |
+| `data-menu-button`, `data-menu-button-label`, `#site-menu`, `data-menu-close`, `data-menu-overlay` | header, side menu | `menu`: open/close, Esc, focus trap and return, scroll lock; at init adds `role="dialog"` and `aria-modal="true"` to `#site-menu`, names it from the inner `<nav aria-label="Menu">` and sets the burger's hidden name from `data-label-open` (so the text in `data-menu-button-label` is only the no-JS fallback). State classes on `<html>`: `is-menu-open` while open, `is-menu-locked` until the panel has slid out (scroll lock; `--scrollbar-comp` inline) |
 | `data-tabs`, `role="tablist"`, `role="tab"`, `role="tabpanel"` | track banner | `tabs` |
 | `data-validate`, `data-field-error`, `data-validate-messages` (exactly one element; its `data-label-*` attributes are the messages) | track and schedule forms | `form-validation`: adds `novalidate`, required/format checks (`valueMissing`; `badInput` for the date; `rangeUnderflow` for weeks out), `aria-invalid`, messages, focus first error; submits to `#` |
 | `data-carousel`, `data-carousel-track`, `data-carousel-prev`, `data-carousel-next` | industries, news (below 768), social | `carousel`: scroll-snap row, prev/next scroll by one card, buttons disabled at the ends, no autoplay |
