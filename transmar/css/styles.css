@@ -874,11 +874,16 @@ main:focus {
   background-color: transparent;
 }
 
-/* Mobile: the sheet is the full viewport wide (the page is locked, so 100vw has no scrollbar in
-   it). The close button moves the opposite way by the same amount, on the same timing, so it
-   stays exactly over the burger through the slide-in and the slide-out. */
+/* Mobile: the sheet is the full viewport wide. 100vw equals the sheet width only while
+   is-menu-locked is set (no scrollbar in 100vw); close() keeps the lock until the sheet's
+   transitionend, so if that unlock timing changes, the X drifts by the scrollbar width.
+   The close button moves the opposite way by the same amount, on the same timing, so it stays
+   exactly over the burger through the slide-in. It is hidden (no visibility transition) as soon
+   as the close starts, so during the slide-out it never covers or takes clicks meant for the
+   burger that is back in the header. */
 @media (width < 768px) {
   .js .site-menu__close {
+    visibility: hidden;
     transform: translateX(-100vw);
     transition: transform var(--duration-drawer) var(--ease-out);
   }
@@ -888,6 +893,7 @@ main:focus {
   }
 
   :root.js.is-menu-open .site-menu__close {
+    visibility: visible;
     transform: none;
   }
 }

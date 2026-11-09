@@ -36,6 +36,7 @@ The rules marked *(starter)* come from earlier figma-build sites; keep them unle
 - CSS that hides content until JS acts must have a fallback that removes the hiding when the script never runs (the inline head script removes `js` if `data-js-ready` is missing at load), not only try/catch around inits. *(starter)*
 - A JS copy of an element (a ghost, a template clone) never deep-clones hidden lazy images: a cloned `<img>` starts loading at once; check the network panel after the interaction. *(starter)*
 - A control that takes another control's place (a dialog's close button over the burger) stays at that place in every frame of the transition, not only at rest: counter-move it against a sliding parent or keep it out of the slide, and sample its position during the motion. (from PR #25)
+- A control that is going away (the close button of a closing dialog) is hidden and stops taking clicks as soon as the close starts, not when its parent's transition ends, so it never covers or intercepts the control that comes back (from PR #25)
 - Changing the scroll position of an inner element (a tab row, a carousel) never scrolls the page: use `scrollTo` on the element itself and check that the page does not jump (watch scroll anchoring). *(starter)*
 
 ## Performance and assets
