@@ -13,7 +13,7 @@ Every image file of the site, where it comes from in Figma and where it is used.
 - One file per image, about 2x the largest displayed size; no `srcset`, no generated sizes, no originals folder.
 - `width`/`height` on every `<img>` equal the file's real pixels.
 - Images below the first screen have `loading="lazy" decoding="async"`; the key visual is eager with `fetchpriority="high"`.
-- Logos, decorative shapes, the map and the LinkedIn badge are image files; small UI icons are sprite symbols.
+- Logos, decorative shapes, the map and the LinkedIn badge are image files, except the header logo, which is the sprite symbol `logo` (`currentColor`: white at the top, Primary/500 when scrolled); small UI icons are sprite symbols.
 
 ## Tables
 One table per section, in page order. "Size now" is the file's real pixel size (for an SVG, its `viewBox`). Raster sizes are about 2x the desktop display size, except where the Figma source was smaller (never upscaled; see Notes).
@@ -38,7 +38,7 @@ One table per section, in page order. "Size now" is the file's real pixel size (
 ### Services (`images/services/`)
 | File | Size now | Figma node(s) | Used where (display size) | Replace with | Notes |
 |---|---|---|---|---|---|
-| `services-bg.webp` | 2880×908 | ref `c08e18481a8bd2e79608e586116286a079727d7b` (`2589:8686`, mobile `1410:19274`) | services background strip: desktop shows its bottom part (1440×231, `object-position: bottom`), mobile all of it (1440×454 wide, cropped by the section) | 2880×908 | the region of the source that Figma's stretch transform shows on mobile; desktop shows the lower half of it. Has transparency at the top |
+| `services-bg.webp` | 2880×908 | ref `c08e18481a8bd2e79608e586116286a079727d7b` (`2589:8686`, mobile `1410:19274`) | services background strip: desktop shows its bottom part (1440×231, `object-position: bottom`), mobile all of it (1440×454 wide, cropped by the section) | 2880×908 | the region of the source that Figma's stretch transform shows on mobile; desktop shows the lower half of it. Effectively opaque |
 | `services-shape.svg` | 1408×1407 (SVG) | `2589:8687` (mobile `1410:19372`, same shape at 574) | blue shape, lower right (1407 desktop, 574 mobile) | SVG, Primary/500 | decorative |
 
 ### Industries (`images/industries/`)
@@ -103,7 +103,7 @@ Single-colour symbols in `currentColor`: set the colour with CSS `color`. Draw o
 | `icon-service-vessel-fleet` | 0 0 63 50 | `I2589:8708;2329:52278` | 63×50 | services |
 | `icon-service-terminals` | 0 0 63 50 | `I2589:8709;2329:52287` | 63×50 | services |
 | `icon-service-integrated` | 0 0 63 50 | `I2589:8710;2329:52246` | 63×50 | services |
-| `icon-glance-ship` | 0 0 56 56 | `2626:34911` | 56 / 40 (Decision 24) | Tons shipped |
+| `icon-glance-ship` | 0 0 56 56 | `2626:34911` | 56 / 40 (Decision 24) | Tons shipped; the mast and underline reach half a unit past the box, as in Figma |
 | `icon-glance-containers` | 0 0 56 56 | `2626:34920` | 56 / 40 | TEU fleet |
 | `icon-glance-employees` | 0 0 56 56 | `2626:34935` | 56 / 40 | Employees |
 | `icon-glance-equipment` | 0 0 56 56 | `2626:34942` | 56 / 40 | Stevedoring equipment |
