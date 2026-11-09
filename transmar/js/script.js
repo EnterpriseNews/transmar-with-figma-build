@@ -263,7 +263,9 @@
   // Each [data-carousel] is a native scroll-snap row (swipe, trackpad and shift-wheel need no
   // script). This part makes prev/next scroll the track itself by one card (never the page),
   // marks the buttons aria-disabled at the ends (not `disabled`, which would drop keyboard focus)
-  // and adds `is-static` when nothing overflows, which hides the buttons. No autoplay (Decision 8).
+  // and adds `is-static` when nothing overflows, which hides the buttons. A card that gets keyboard
+  // focus while partly hidden is scrolled fully into view, again on the track only. No autoplay
+  // (Decision 8).
   const carousel = (() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let count = 0;
@@ -337,8 +339,65 @@
         move(direction);
       };
 
+      /**
+       * Brings a keyboard-focused card fully into view by scrolling the track only. Chromium does
+       * not scroll a focused element that is already partly visible in its scroller, so a peeking
+       * card would keep focus while mostly hidden. The track moves to the nearest snap position
+       * (a card's start on the snap line) that shows the whole card and its focus ring, so the
+       * mandatory snap never pulls it back out of view.
+       * @param {FocusEvent} event
+       */
+      const onFocusIn = (event) => {
+        // Only keyboard focus: moving a card under the pointer between mousedown and mouseup
+        // would turn the click into a click on whatever slid in.
+        try {
+          if (!event.target.matches(':focus-visible')) return;
+        } catch (error) {
+          // A browser without :focus-visible gets the native focus scrolling only.
+          return;
+        }
+        const list = items();
+        const card = list.find((item) => item.contains(event.target));
+        if (!card) return;
+        const rtl = getComputedStyle(track).direction === 'rtl';
+        const box = track.getBoundingClientRect();
+        // Room for the 2px focus ring and its 2px offset, the same as the track's start padding.
+        const inset = parseFloat(getComputedStyle(track).scrollPaddingInlineStart) || 0;
+        const visibleStart = inset;
+        const visibleEnd = box.width - inset;
+        // Logical offsets from the track's start edge (its right edge on a right-to-left page).
+        const offset = (el) => {
+          const rect = el.getBoundingClientRect();
+          return rtl
+            ? { start: box.right - rect.right, end: box.right - rect.left }
+            : { start: rect.left - box.left, end: rect.right - box.left };
+        };
+        const target = offset(card);
+        if (target.start >= visibleStart - 1 && target.end <= visibleEnd + 1) return;
+
+        const position = Math.abs(track.scrollLeft);
+        const max = track.scrollWidth - track.clientWidth;
+        const fits = (delta) => target.start - delta >= visibleStart - 1
+          && target.end - delta <= visibleEnd + 1;
+        let best = null;
+        list.forEach((item) => {
+          // The distance that puts this card on the snap line, limited to the scroll range.
+          const raw = offset(item).start - visibleStart;
+          const delta = Math.min(Math.max(raw, -position), max - position);
+          if (fits(delta) && (best === null || Math.abs(delta) < Math.abs(best))) best = delta;
+        });
+        // A card wider than the track cannot fit: show its start.
+        if (best === null) best = target.start - visibleStart;
+        if (Math.abs(best) < 1) return;
+        track.scrollBy({
+          left: best * (rtl ? -1 : 1),
+          behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        });
+      };
+
       if (prev) prev.addEventListener('click', onClick(-1));
       if (next) next.addEventListener('click', onClick(1));
+      track.addEventListener('focusin', onFocusIn);
       track.addEventListener('scroll', schedule, { passive: true });
       // The track's size changes on resize and at the switch points, the cards' when an image or
       // font arrives; either can start or stop the overflow.
