@@ -269,8 +269,8 @@ h6 {
   font-weight: inherit;
 }
 
-ul[role="list"],
-ol[role="list"] {
+/* :where() keeps this reset at zero specificity, so a component's own margin on a list wins. */
+:where(ul[role="list"], ol[role="list"]) {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -367,4 +367,686 @@ main:focus {
 
 .skip-link:focus {
   transform: none;
+}
+
+/* Small controls (header logo/EN/search/burger, menu close, footer logo/social) keep the size Figma
+   draws, but their pointer target is at least 44×44 (docs/design.md → Focus). The ::before grows
+   around the control's centre without moving anything; it never shrinks a larger control. */
+.site-header__logo,
+.site-header__language,
+.site-header__search,
+.site-header__menu-button,
+.site-footer__logo,
+.site-footer__social-link {
+  position: relative;
+}
+
+.site-header__logo::before,
+.site-header__language::before,
+.site-header__search::before,
+.site-header__menu-button::before,
+.site-menu__close::before,
+.site-footer__logo::before,
+.site-footer__social-link::before {
+  content: "";
+  position: absolute;
+  inset-block: min(0px, (100% - var(--spacing) * 11) / 2);
+  inset-inline: min(0px, (100% - var(--spacing) * 11) / 2);
+}
+
+/* ===== Header ===== */
+/* Transparent over the key visual (white content), white with Primary/500 content once the key
+   visual has scrolled away (`is-scrolled`, set by the header-scroll script; Decision 11). Without
+   JS it is not fixed: it scrolls away with the key visual, so white text never sits on white. */
+.site-header {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: var(--z-header);
+  block-size: var(--header-height);
+  color: var(--color-white);
+  background-color: transparent;
+  /* Always drawn (transparent at the top), so the height never changes between the two looks. */
+  border-block-end: var(--border-thin) solid transparent;
+  transition:
+    color var(--duration-drawer) var(--ease-out),
+    background-color var(--duration-drawer) var(--ease-out),
+    border-color var(--duration-drawer) var(--ease-out);
+}
+
+/* The top state is a dark block (docs/design.md → Focus). */
+.site-header:not(.is-scrolled) {
+  --focus-color: var(--color-white);
+}
+
+.js .site-header {
+  position: fixed;
+  /* Set by the menu script while the page scroll is locked, so the bar does not widen. */
+  inset-inline-end: var(--scrollbar-comp, 0px);
+}
+
+.site-header.is-scrolled {
+  color: var(--color-primary-500);
+  background-color: var(--color-white);
+  border-block-end-color: var(--color-grey-200);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 8);
+  block-size: 100%;
+}
+
+.site-header__logo {
+  display: block;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.site-header__logo-icon {
+  display: block;
+  inline-size: calc(var(--spacing) * 30);
+  block-size: auto;
+}
+
+/* Nav links from 1200 only: the bar needs about 1030px, which 768–1199 does not have; every
+   target is also in the side menu (docs/design.md → Breakpoints, Exception #9). */
+.site-nav {
+  display: none;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 10);
+}
+
+.site-nav__item {
+  flex: 0 1 auto;
+}
+
+.site-nav__link {
+  display: block;
+  /* A minimum, not a width: a longer label grows (and wraps when the bar runs out of room). */
+  min-inline-size: calc(var(--spacing) * 21);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line-height);
+  font-weight: var(--text-body-sm-weight);
+  text-align: center;
+  text-decoration: none;
+}
+
+.site-nav__item:last-child .site-nav__link {
+  min-inline-size: calc(var(--spacing) * 38.5);
+}
+
+.site-header__actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: calc(var(--spacing) * 5);
+  margin-inline-start: auto;
+}
+
+.site-header__language {
+  display: none;
+  font-size: var(--text-label-size);
+  line-height: var(--text-label-line-height);
+  font-weight: var(--text-label-weight);
+  text-decoration: none;
+}
+
+.site-header__search {
+  display: none;
+  place-items: center;
+  inline-size: calc(var(--spacing) * 8.5);
+  block-size: calc(var(--spacing) * 8.5);
+  color: inherit;
+}
+
+.site-header__menu-button {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--spacing) * 7.5);
+  block-size: calc(var(--spacing) * 7.5);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  color: inherit;
+  background-color: transparent;
+}
+
+.site-header__icon {
+  display: block;
+}
+
+.site-header__menu-button .site-header__icon {
+  inline-size: calc(var(--spacing) * 5);
+  block-size: auto;
+}
+
+.site-nav__link:hover,
+.site-header__language:hover {
+  text-decoration: underline;
+  text-underline-offset: var(--spacing);
+}
+
+/* While the menu is open its own close button takes the burger's place (mobile) or the panel
+   covers it (wider); either way the burger must not show through. */
+:root.is-menu-open .site-header__menu-button {
+  visibility: hidden;
+}
+
+/* A burger that cannot open anything helps no one: without JS the menu is plain content at the
+   end of the page instead. */
+:root:not(.js) .site-header__menu-button {
+  display: none;
+}
+
+/* Mobile scrolled look = component `Mobile header` 2329:53026 (70 tall, logo 142, burger 38). */
+@media (width < 768px) {
+  :root.is-header-scrolled {
+    --header-height: 70px;
+  }
+
+  .site-header.is-scrolled .site-header__logo-icon {
+    inline-size: calc(var(--spacing) * 35.5);
+  }
+
+  .site-header.is-scrolled .site-header__menu-button {
+    inline-size: calc(var(--spacing) * 9.5);
+    block-size: calc(var(--spacing) * 9.5);
+  }
+
+  .site-header.is-scrolled .site-header__menu-button .site-header__icon {
+    inline-size: auto;
+  }
+}
+
+@media (width >= 768px) {
+  /* 179 in Figma, 180 on the spacing scale. */
+  .site-header__logo-icon {
+    inline-size: calc(var(--spacing) * 45);
+  }
+
+  .site-header__language {
+    display: block;
+  }
+
+  .site-header__search {
+    display: grid;
+  }
+
+  .site-header__menu-button {
+    inline-size: calc(var(--spacing) * 9.5);
+    block-size: calc(var(--spacing) * 9.5);
+  }
+
+  .site-header__menu-button .site-header__icon {
+    inline-size: auto;
+  }
+}
+
+@media (width >= 1200px) {
+  .site-nav {
+    display: block;
+  }
+}
+
+/* ===== Footer ===== */
+/* Mobile: one centred stack (logo, tagline, link columns, social, media, copyright). The brand
+   wrapper dissolves (display: contents) so the link columns can sit between its parts; the
+   columns go two to a row, a further one wraps under them, centred.
+   From 768: brand column on the start side, the 168px link columns at the end (wrapping when
+   they don't fit next to the brand), copyright below. Any number of columns works. */
+.site-footer {
+  --focus-color: var(--color-white);
+  color: var(--color-white);
+  background-color: var(--color-primary-500);
+}
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  /* Figma's text boxes are shorter than their line boxes, so the gaps here are measured from the
+     reference screenshots (text centres), not copied from the frame's auto-layout gaps. */
+  padding-block: calc(var(--spacing) * 15) calc(var(--spacing) * 14);
+  text-align: center;
+}
+
+.site-footer__brand {
+  display: contents;
+}
+
+.site-footer__logo {
+  display: block;
+  grid-row: 1;
+  padding-block: calc(var(--spacing) * 2);
+}
+
+.site-footer__logo-image {
+  inline-size: calc(var(--spacing) * 40);
+}
+
+.site-footer__tagline {
+  grid-row: 2;
+  margin-block-start: calc(var(--spacing) * 4);
+  font-size: var(--text-tagline-size);
+  line-height: var(--text-tagline-line-height);
+  font-weight: var(--text-tagline-weight);
+  color: var(--color-white-65);
+}
+
+.site-footer__columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: calc(var(--spacing) * 10) calc(var(--spacing) * 5);
+  grid-row: 3;
+  justify-self: stretch;
+  margin-block-start: calc(var(--spacing) * 10);
+}
+
+/* Two to a row: half the row minus half the 20px gap. */
+.site-footer__column {
+  flex: 0 1 calc(50% - var(--spacing) * 2.5);
+  min-inline-size: 0;
+}
+
+.site-footer__social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: calc(var(--spacing) * 5);
+  grid-row: 4;
+  margin-block-start: calc(var(--spacing) * 9.5);
+}
+
+/* 35 in Figma, 36 on the spacing scale; the ring is drawn here, the glyph is the sprite icon. */
+.site-footer__social-link {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--spacing) * 9);
+  block-size: calc(var(--spacing) * 9);
+  border: var(--border-rail) solid var(--color-white-25);
+  border-radius: var(--radius-full);
+  color: var(--color-white);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.site-footer__social-link:hover {
+  border-color: var(--color-white);
+}
+
+.site-footer__social-icon {
+  display: block;
+}
+
+.site-footer__media {
+  grid-row: 5;
+  margin-block-start: calc(var(--spacing) * 2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line-height);
+  font-weight: var(--text-body-sm-weight);
+}
+
+.site-footer__media a {
+  text-decoration: none;
+}
+
+.site-footer__media a:hover {
+  text-decoration: underline;
+}
+
+.site-footer__title {
+  font-size: var(--text-label-size);
+  line-height: var(--text-label-line-height);
+  font-weight: var(--text-label-weight);
+  color: var(--color-primary-50);
+}
+
+/* The 24px rule under each column title. */
+.site-footer__title::after {
+  content: "";
+  display: block;
+  inline-size: calc(var(--spacing) * 6);
+  block-size: var(--border-thin);
+  margin-inline: auto;
+  background-color: var(--color-primary-50);
+}
+
+.site-footer__links {
+  margin-block-start: calc(var(--spacing) * 2);
+}
+
+/* Each link fills its whole row (no dead gap between rows); the row pitch is the drawn one. */
+.site-footer__link {
+  display: block;
+  padding-block: calc(var(--spacing) * 0.5) var(--spacing);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line-height);
+  font-weight: var(--text-body-sm-weight);
+  color: var(--color-white-65);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.site-footer__link:hover {
+  color: var(--color-white);
+}
+
+.site-footer__copyright {
+  grid-column: 1 / -1;
+  grid-row: 6;
+  margin-block-start: calc(var(--spacing) * 9.5);
+  font-size: var(--text-copyright-size);
+  line-height: var(--text-copyright-line-height);
+  font-weight: var(--text-copyright-weight);
+}
+
+@media (width >= 768px) {
+  .site-footer__inner {
+    /* The brand keeps at least the width of its row of five 36px social rings (5 × 36 + 4 × 20);
+       the columns' track takes what they need of the rest, and they wrap when it is not enough. */
+    grid-template-columns: minmax(calc(var(--spacing) * 65), 1fr) auto;
+    column-gap: calc(var(--spacing) * 5);
+    justify-items: stretch;
+    padding-block: calc(var(--spacing) * 18) calc(var(--spacing) * 19);
+    text-align: start;
+  }
+
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    grid-row: 1;
+  }
+
+  /* Figma's box is 210 × 64.81 with the logo centred in it, its top 8px below the titles' line
+     box. */
+  .site-footer__logo {
+    padding-block: calc(var(--spacing) * 6.5) calc(var(--spacing) * 4);
+  }
+
+  .site-footer__logo-image {
+    inline-size: calc(var(--spacing) * 52.5);
+  }
+
+  /* Mobile only (Decision 6). */
+  .site-footer__tagline {
+    display: none;
+  }
+
+  .site-footer__columns {
+    justify-content: flex-end;
+    grid-row: 1;
+    margin-block-start: 0;
+  }
+
+  .site-footer__column {
+    flex: 0 0 calc(var(--spacing) * 42);
+  }
+
+  .site-footer__social {
+    justify-content: flex-start;
+    margin-block-start: calc(var(--spacing) * 6);
+  }
+
+  .site-footer__media {
+    margin-block-start: calc(var(--spacing) * 4);
+  }
+
+  .site-footer__title::after {
+    margin-block-start: calc(var(--spacing) * 0.5);
+    margin-inline: 0;
+  }
+
+  .site-footer__link {
+    padding-block: 0;
+  }
+
+  .site-footer__copyright {
+    grid-row: 2;
+    margin-block-start: calc(var(--spacing) * 4.5);
+  }
+}
+
+/* ===== Side menu ===== */
+/* Without JS: plain content after the footer. With JS (`menu` script): a dialog that slides in
+   from the end edge. Mobile: a full-screen white sheet under the white 70px header, its close
+   button exactly over the burger. From 768: a 602px panel over a 60% overlay (Decision 10). */
+.site-menu {
+  background-color: var(--color-white);
+}
+
+.js .site-menu {
+  position: fixed;
+  inset-block: var(--header-height) 0;
+  inset-inline-end: 0;
+  z-index: var(--z-menu);
+  inline-size: 100%;
+  transform: translateX(100%);
+  visibility: hidden;
+  /* Closing: visibility waits for the slide to end, so the panel is seen sliding out. */
+  transition:
+    transform var(--duration-drawer) var(--ease-out),
+    visibility var(--duration-drawer);
+}
+
+:root[dir="rtl"].js .site-menu {
+  transform: translateX(-100%);
+}
+
+/* Opening: visible at once (not after the slide), so the close button can take focus now. */
+:root.js.is-menu-open .site-menu {
+  transform: none;
+  visibility: visible;
+  transition: transform var(--duration-drawer) var(--ease-out);
+}
+
+.site-menu__overlay {
+  display: none;
+}
+
+/* Without JS there is nothing to close. */
+.site-menu__close {
+  display: none;
+}
+
+.js .site-menu__close {
+  position: absolute;
+  /* Over the burger: 16px below the header's top edge, at the container's end padding (plus the
+     scrollbar compensation the header gets while the page is locked). */
+  inset-block-start: calc(var(--spacing) * 4 - var(--header-height));
+  inset-inline-end: calc(var(--container-padding) + var(--scrollbar-comp, 0px));
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--spacing) * 9.5);
+  block-size: calc(var(--spacing) * 9.5);
+  padding: 0;
+  border: 0;
+  color: var(--color-grey-700);
+  background-color: transparent;
+}
+
+/* Mobile: the sheet is the full viewport wide. 100vw equals the sheet width only while
+   is-menu-locked is set (no scrollbar in 100vw); close() keeps the lock until the sheet's
+   transitionend, so if that unlock timing changes, the X drifts by the scrollbar width.
+   The close button moves the opposite way by the same amount, on the same timing, so it stays
+   exactly over the burger through the slide-in. It is hidden (no visibility transition) as soon
+   as the close starts, so during the slide-out it never covers or takes clicks meant for the
+   burger that is back in the header. */
+@media (width < 768px) {
+  .js .site-menu__close {
+    visibility: hidden;
+    transform: translateX(-100vw);
+    transition: transform var(--duration-drawer) var(--ease-out);
+  }
+
+  :root[dir="rtl"].js .site-menu__close {
+    transform: translateX(100vw);
+  }
+
+  :root.js.is-menu-open .site-menu__close {
+    visibility: visible;
+    transform: none;
+  }
+}
+
+.site-menu__close-icon {
+  display: block;
+}
+
+.site-menu__nav {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+  padding: calc(var(--spacing) * 10) var(--container-padding);
+}
+
+.js .site-menu__nav {
+  block-size: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.menu-group__title {
+  font-size: var(--text-menu-heading-size);
+  line-height: var(--text-menu-heading-line-height);
+  font-weight: var(--text-menu-heading-weight);
+  text-transform: uppercase;
+  color: var(--color-primary-500);
+}
+
+/* The 1.5px grey rail runs along the item text (not the row padding); each item's own bar
+   sits on top of it. */
+.menu-group__list {
+  position: relative;
+  margin-block-start: calc(var(--spacing) * 0.5);
+}
+
+.menu-group__list::before {
+  content: "";
+  position: absolute;
+  inset-block: calc(var(--spacing) * 0.5);
+  inset-inline-start: 0;
+  inline-size: var(--border-rail);
+  border-radius: var(--radius-md);
+  background-color: var(--color-grey-100);
+}
+
+/* Each item fills its whole row: the 4px gap between items is its padding. */
+.menu-group__link {
+  position: relative;
+  display: block;
+  padding-block: calc(var(--spacing) * 0.5);
+  padding-inline-start: calc(var(--border-rail) + var(--spacing) * 2);
+  font-size: var(--text-menu-item-size);
+  line-height: var(--text-menu-item-line-height);
+  font-weight: var(--text-menu-item-weight);
+  color: var(--color-grey-600);
+  text-decoration: none;
+}
+
+.menu-group__link::before {
+  content: "";
+  position: absolute;
+  inset-block: calc(var(--spacing) * 0.5);
+  inset-inline-start: 0;
+  inline-size: var(--border-rail);
+  border-radius: var(--radius-md);
+}
+
+/* Figma variant "hoover": bold, 3px Primary/500 bar, text 1.5px further in. */
+.menu-group__link:hover,
+.menu-group__link:focus-visible {
+  padding-inline-start: calc(var(--border-rail-active) + var(--spacing) * 2);
+  font-weight: var(--text-label-weight);
+}
+
+.menu-group__link:hover::before,
+.menu-group__link:focus-visible::before {
+  inline-size: var(--border-rail-active);
+  background-color: var(--color-primary-500);
+}
+
+/* Figma draws these links as 15px boxes 36px apart (pitch 51), so the 32px gap above them and the
+   panel's centring are measured from boxes smaller than the line; each link fills its whole 51px
+   row, and the negative margins give back what the taller rows add (checked against
+   docs/design/home-menu-open--1440.png). */
+.site-menu__links {
+  margin-block: calc(var(--spacing) * -5) calc(var(--spacing) * -4);
+}
+
+.site-menu__link {
+  display: block;
+  padding-block: calc(var(--spacing) * 2) calc(var(--spacing) * 2.5);
+  font-size: var(--text-menu-link-size);
+  line-height: var(--text-menu-link-line-height);
+  font-weight: var(--text-menu-link-weight);
+  color: var(--color-primary-800);
+  text-decoration: none;
+}
+
+.site-menu__link:hover {
+  text-decoration: underline;
+}
+
+@media (width >= 768px) {
+  .js .site-menu {
+    inset-block-start: 0;
+    inline-size: min(calc(var(--spacing) * 150.5), 100%);
+    border-start-start-radius: var(--radius-drawer);
+    border-end-start-radius: var(--radius-drawer);
+  }
+
+  .js .site-menu__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-menu);
+    display: block;
+    background-color: var(--color-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--duration-drawer) var(--ease-out),
+      visibility var(--duration-drawer);
+  }
+
+  :root.js.is-menu-open .site-menu__overlay {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--duration-drawer) var(--ease-out);
+  }
+
+  .js .site-menu__close {
+    inset-block-start: calc(var(--spacing) * 10.5);
+    inset-inline-end: calc(var(--spacing) * 20);
+    inline-size: calc(var(--spacing) * 6.5);
+    block-size: calc(var(--spacing) * 6.5);
+  }
+
+  .site-menu__nav {
+    padding-inline: calc(var(--spacing) * 20);
+  }
+
+  /* Centred in the panel when it fits; `safe` makes a short window scroll from the top instead of
+     clipping it (browsers without `safe` keep plain centring). */
+  .js .site-menu__nav {
+    justify-content: center;
+    justify-content: safe center;
+  }
+}
+
+/* Page scroll lock while the menu is open and until it has slid out (`is-menu-locked`).
+   --scrollbar-comp is the width of the classic scrollbar that overflow: hidden removes, measured
+   by the menu script, so neither the page nor the fixed header shifts. */
+:root.is-menu-locked {
+  overflow: hidden;
+  padding-inline-end: var(--scrollbar-comp, 0px);
 }

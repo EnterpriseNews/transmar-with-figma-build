@@ -215,10 +215,10 @@
         <a class="site-header__language" href="#">EN</a>
         <!-- /CONTENT -->
         <!-- CONTENT: header search -->
-        <a class="site-header__search" href="#"><svg class="icon" width="21" height="21" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg><span class="visually-hidden">Search</span></a>
+        <a class="site-header__search" href="#"><svg class="icon site-header__icon" width="21" height="21" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg><span class="visually-hidden">Search</span></a>
         <!-- /CONTENT -->
         <!-- CONTENT: header menu-button -->
-        <button class="site-header__menu-button" type="button" data-menu-button aria-controls="site-menu" aria-expanded="false" data-label-open="Open menu" data-label-close="Close menu"><svg class="icon" width="25" height="21" aria-hidden="true" focusable="false"><use href="#icon-menu"></use></svg><span class="visually-hidden" data-menu-button-label>Open menu</span></button>
+        <button class="site-header__menu-button" type="button" data-menu-button aria-controls="site-menu" aria-expanded="false" data-label-open="Open menu" data-label-close="Close menu"><svg class="icon site-header__icon" width="25" height="21" aria-hidden="true" focusable="false"><use href="#icon-menu"></use></svg><span class="visually-hidden" data-menu-button-label>Open menu</span></button>
         <!-- /CONTENT -->
       </div>
     </div>
@@ -704,45 +704,48 @@
         <!-- /CONTENT -->
         <ul class="site-footer__social" role="list">
           <!-- CONTENT: footer social-link -->
-          <li><a class="site-footer__social-link" href="https://www.linkedin.com/company/transmarline/" target="_blank" rel="noopener noreferrer"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-linkedin"></use></svg><span class="visually-hidden">LinkedIn (opens in a new tab)</span></a></li>
+          <li><a class="site-footer__social-link" href="https://www.linkedin.com/company/transmarline/" target="_blank" rel="noopener noreferrer"><svg class="icon site-footer__social-icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-linkedin"></use></svg><span class="visually-hidden">LinkedIn (opens in a new tab)</span></a></li>
           <!-- /CONTENT -->
           <!-- CONTENT: footer social-link -->
-          <li><a class="site-footer__social-link" href="#"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg><span class="visually-hidden">Facebook</span></a></li>
+          <li><a class="site-footer__social-link" href="#"><svg class="icon site-footer__social-icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg><span class="visually-hidden">Facebook</span></a></li>
           <!-- /CONTENT -->
           <!-- CONTENT: footer social-link -->
-          <li><a class="site-footer__social-link" href="#"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg><span class="visually-hidden">X</span></a></li>
+          <li><a class="site-footer__social-link" href="#"><svg class="icon site-footer__social-icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg><span class="visually-hidden">X</span></a></li>
           <!-- /CONTENT -->
           <!-- CONTENT: footer social-link -->
-          <li><a class="site-footer__social-link" href="#"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-youtube"></use></svg><span class="visually-hidden">YouTube</span></a></li>
+          <li><a class="site-footer__social-link" href="#"><svg class="icon site-footer__social-icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-youtube"></use></svg><span class="visually-hidden">YouTube</span></a></li>
           <!-- /CONTENT -->
           <!-- CONTENT: footer social-link -->
-          <li><a class="site-footer__social-link" href="#"><svg class="icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-instagram"></use></svg><span class="visually-hidden">Instagram</span></a></li>
+          <li><a class="site-footer__social-link" href="#"><svg class="icon site-footer__social-icon" width="19" height="19" aria-hidden="true" focusable="false"><use href="#icon-instagram"></use></svg><span class="visually-hidden">Instagram</span></a></li>
           <!-- /CONTENT -->
         </ul>
         <!-- CONTENT: footer media -->
         <p class="site-footer__media">For media inquiries, please contact <a href="mailto:media@transmar.com"><strong>media@transmar.com</strong></a></p>
         <!-- /CONTENT -->
       </div>
-      <!-- CONTENT: footer column -->
-      <div class="site-footer__column">
-        <h2 id="footer-quick-links" class="site-footer__title">Quick Links</h2>
-        <ul class="site-footer__links" role="list" aria-labelledby="footer-quick-links">
-          <li><a class="site-footer__link" href="#">Our Story</a></li>
-          <li><a class="site-footer__link" href="#">Our Containers</a></li>
-          <li><a class="site-footer__link" href="#">Services</a></li>
-        </ul>
+      <!-- Any number of footer columns: they wrap (mobile) or line up at the end (from 768). -->
+      <div class="site-footer__columns">
+        <!-- CONTENT: footer column -->
+        <div class="site-footer__column">
+          <h2 id="footer-quick-links" class="site-footer__title">Quick Links</h2>
+          <ul class="site-footer__links" role="list" aria-labelledby="footer-quick-links">
+            <li><a class="site-footer__link" href="#">Our Story</a></li>
+            <li><a class="site-footer__link" href="#">Our Containers</a></li>
+            <li><a class="site-footer__link" href="#">Services</a></li>
+          </ul>
+        </div>
+        <!-- /CONTENT -->
+        <!-- CONTENT: footer column -->
+        <div class="site-footer__column">
+          <h2 id="footer-get-to-know-us" class="site-footer__title">Get to Know Us</h2>
+          <ul class="site-footer__links" role="list" aria-labelledby="footer-get-to-know-us">
+            <li><a class="site-footer__link" href="#">Latest News</a></li>
+            <li><a class="site-footer__link" href="#">Careers</a></li>
+            <li><a class="site-footer__link" href="#">Contact us</a></li>
+          </ul>
+        </div>
+        <!-- /CONTENT -->
       </div>
-      <!-- /CONTENT -->
-      <!-- CONTENT: footer column -->
-      <div class="site-footer__column">
-        <h2 id="footer-get-to-know-us" class="site-footer__title">Get to Know Us</h2>
-        <ul class="site-footer__links" role="list" aria-labelledby="footer-get-to-know-us">
-          <li><a class="site-footer__link" href="#">Latest News</a></li>
-          <li><a class="site-footer__link" href="#">Careers</a></li>
-          <li><a class="site-footer__link" href="#">Contact us</a></li>
-        </ul>
-      </div>
-      <!-- /CONTENT -->
       <!-- CONTENT: footer copyright -->
       <p class="site-footer__copyright">©2023 Transmar. All Rights Reserved</p>
       <!-- /CONTENT -->
@@ -778,7 +781,7 @@
   <div class="site-menu__overlay" data-menu-overlay></div>
   <div id="site-menu" class="site-menu">
     <!-- CONTENT: menu close -->
-    <button class="site-menu__close" type="button" data-menu-close><svg class="icon" width="26" height="26" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg><span class="visually-hidden">Close menu</span></button>
+    <button class="site-menu__close" type="button" data-menu-close><svg class="icon site-menu__close-icon" width="26" height="26" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg><span class="visually-hidden">Close menu</span></button>
     <!-- /CONTENT -->
     <nav class="site-menu__nav" aria-label="Menu">
       <!-- CONTENT: menu group -->

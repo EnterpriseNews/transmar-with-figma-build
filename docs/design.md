@@ -16,6 +16,8 @@ Mobile-first: base styles are mobile; `@media (width >= 768px)` (tablet) and `@m
 
 **Exception (#8): the key-visual `<picture>`.** Its sources choose a file, not a layout: `kv-wide.webp` for `(width > 1440px)` (beyond `--container-max`, where Decision 12's wide art starts), `kv-desktop.webp` for `(width >= 768px)`, and `kv-mobile.webp` as the `<img>` fallback, in that order. The 1440 in that `media` attribute is the only width outside the two switch points; it must stay equal to `--container-max`. CSS media queries still use only 768 and 1200.
 
+**Exception (#9): the header on tablet.** The 1440 bar needs about 1030px (logo 180 + nav 650 + actions 135 + gaps), which 768–1199 does not have, so the five nav links show from **1200** only; 768–1199 shows the logo (180), EN, search and the burger with the 1440 sizes and gaps (every nav target is also in the side menu). Below 768 the header is the 375 frame (logo and burger only).
+
 **Match each frame exactly.** Where 375 differs from 1440 (sizes, order, centring, radius), build what 375 shows; copy follows desktop (Decision 6). Don't "normalise".
 
 ## Tokens (the only allowed values)
@@ -44,7 +46,7 @@ Mobile-first: base styles are mobile; `@media (width >= 768px)` (tablet) and `@m
 
 ## Shared patterns
 - Reuse the shared classes and script parts: `.container`, `.section-head`, `.btn` (+ `--primary`, `--light`, `--ghost`), `.arrow-link`, `.icon`, header, menu, footer, `[data-tabs]`, `[data-carousel]`, `[data-pager]`, `[data-validate]`, `[data-alert]`, `[data-header]`. A new variant is a BEM modifier, not a copy.
-- Focus: visible 2px outline in `--focus-color`, 2px offset, on every interactive element (one `:focus-visible` rule in the base styles). `--focus-color` is an alias, never a new value: `var(--color-primary-500)` under `:root`, redefined to `var(--color-white)` only on the root element of a dark block (services, glance, footer, alert, and the header in its top state). Nothing else sets it: no component, inner element or other section; hover per Figma (services items, side-menu items), otherwise a colour or underline change; touch targets at least 44×44px below desktop.
+- Focus: visible 2px outline in `--focus-color`, 2px offset, on every interactive element (one `:focus-visible` rule in the base styles). `--focus-color` is an alias, never a new value: `var(--color-primary-500)` under `:root`, redefined to `var(--color-white)` only on the root element of a dark block (services, glance, footer, alert, and the header in its top state). Nothing else sets it: no component, inner element or other section; hover per Figma (services items, side-menu items), otherwise a colour or underline change; touch targets at least 44×44px below desktop (small controls keep their drawn size and get a 44×44 `::before` hit area, at every width). **Exception (#9): list text links** (side-menu items, footer links) fill their whole row but keep the drawn row pitch (menu 33 mobile / 26 from 768, footer 32 mobile / 26 from 768), which is under 44; they meet WCAG 2.5.8 (at least 24) instead. See `docs/design-analysis.md` → Build decisions.
 - External links: new tab, `rel="noopener noreferrer"`, visually hidden "(opens in a new tab)". Links to other pages and undefined links go to `#` (Decision 17).
 - WAI-ARIA patterns for tabs (track form), the menu dialog, carousels and the advisory pager.
 

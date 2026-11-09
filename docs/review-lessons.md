@@ -25,6 +25,7 @@ The rules marked *(starter)* come from earlier figma-build sites; keep them unle
 - Motion that starts or ends outside an element's resting box (slide-ins, fading copies) is clipped by its own component (`overflow-x: clip`), and "no horizontal scroll" is checked during the motion, not only at rest. *(starter)*
 - A box with `aspect-ratio` that shares a grid row with content of unknown length gets a definite inline size (`inline-size: 100%` in a `minmax(0, 1fr)` track); test it with doubled copy. *(starter)*
 - Check every layout between breakpoints too (e.g. 767/768, 1199/1200, 320), not only at the Figma frame widths. *(starter)*
+- A repeated content item never takes a fixed track in its parent grid next to full-width rows (`grid-column: 1 / -1` spans only the explicit tracks): put the repeated items in their own wrapping container and test with one item added at 320, 375 and each switch point. (from PR #25)
 
 ## Accessibility
 - The 44px touch target is a width as well as a height: check the narrowest instance of a shared control (a short tab label, a shrinking logo). *(starter)*
@@ -34,6 +35,8 @@ The rules marked *(starter)* come from earlier figma-build sites; keep them unle
 ## Interactions and state
 - CSS that hides content until JS acts must have a fallback that removes the hiding when the script never runs (the inline head script removes `js` if `data-js-ready` is missing at load), not only try/catch around inits. *(starter)*
 - A JS copy of an element (a ghost, a template clone) never deep-clones hidden lazy images: a cloned `<img>` starts loading at once; check the network panel after the interaction. *(starter)*
+- A control that takes another control's place (a dialog's close button over the burger) stays at that place in every frame of the transition, not only at rest: counter-move it against a sliding parent or keep it out of the slide, and sample its position during the motion. (from PR #25)
+- A control that is going away (the close button of a closing dialog) is hidden and stops taking clicks as soon as the close starts, not when its parent's transition ends, so it never covers or intercepts the control that comes back (from PR #25)
 - Changing the scroll position of an inner element (a tab row, a carousel) never scrolls the page: use `scrollTo` on the element itself and check that the page does not jump (watch scroll anchoring). *(starter)*
 
 ## Performance and assets
