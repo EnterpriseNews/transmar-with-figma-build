@@ -369,15 +369,22 @@ main:focus {
   transform: none;
 }
 
-/* Small controls (header logo/EN/search/burger, menu close, footer logo/social) keep the size Figma
-   draws, but their pointer target is at least 44×44 (docs/design.md → Focus). The ::before grows
-   around the control's centre without moving anything; it never shrinks a larger control. */
+/* Small controls (header logo/EN/search/burger, menu close, footer logo/social, buttons, arrow
+   links, carousel and pager buttons) keep the size Figma draws (e.g. buttons 38, 42 or 44 tall),
+   but their pointer target is at least 44×44 (docs/design.md → Focus). The ::before grows around
+   the control's centre without moving anything; it never shrinks a larger control. Any
+   non-static position keeps it working, so a section that has to place one of these absolutely
+   does that with a wrapper, not by resetting `position` here. */
 .site-header__logo,
 .site-header__language,
 .site-header__search,
 .site-header__menu-button,
 .site-footer__logo,
-.site-footer__social-link {
+.site-footer__social-link,
+.btn,
+.arrow-link,
+.carousel__button,
+.pager__button {
   position: relative;
 }
 
@@ -387,11 +394,401 @@ main:focus {
 .site-header__menu-button::before,
 .site-menu__close::before,
 .site-footer__logo::before,
-.site-footer__social-link::before {
+.site-footer__social-link::before,
+.btn::before,
+.arrow-link::before,
+.carousel__button::before,
+.pager__button::before {
   content: "";
   position: absolute;
   inset-block: min(0px, (100% - var(--spacing) * 11) / 2);
   inset-inline: min(0px, (100% - var(--spacing) * 11) / 2);
+}
+
+/* ===== Shared components ===== */
+/* Composed by the sections (docs/design.md → Shared patterns). A section that needs another look
+   adds a modifier here; it never restyles these classes or their elements in its own block. */
+
+/* --- Section heading: eyebrow + title + text ---
+   Type and colour only. The gaps (eyebrow → title 0/4/8, title → text 8/16/20) and the width
+   differ in every frame, so each section's own head class sets them; nothing here sets a gap,
+   margin or width. The text takes the head's colour, so one modifier changes it. */
+.section-head {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-primary-950);
+}
+
+.section-head__eyebrow {
+  font-size: var(--text-eyebrow-size);
+  line-height: var(--text-eyebrow-line-height);
+  font-weight: var(--text-eyebrow-weight);
+  text-transform: uppercase;
+  color: var(--color-primary-500);
+}
+
+.section-head__title {
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line-height);
+  font-weight: var(--text-h1-weight);
+  color: var(--color-primary-800);
+}
+
+.section-head__text {
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line-height);
+  font-weight: var(--text-body-weight);
+}
+
+/* On a dark block (services, glance): eyebrow, title and text white (glance; group-c §1). */
+.section-head--dark {
+  color: var(--color-white);
+}
+
+.section-head--dark .section-head__eyebrow,
+.section-head--dark .section-head__title {
+  color: inherit;
+}
+
+/* Services: the eyebrow is Primary/50 on the dark block (group-b §1). */
+.section-head--eyebrow-primary-50 .section-head__eyebrow {
+  color: var(--color-primary-50);
+}
+
+/* Services: the title's text style is h1-services (36/44, not 36/54). */
+.section-head--title-h1-services .section-head__title {
+  font-size: var(--text-h1-services-size);
+  line-height: var(--text-h1-services-line-height);
+  font-weight: var(--text-h1-services-weight);
+}
+
+/* Services: the paragraphs are body-lg. */
+.section-head--text-body-lg .section-head__text {
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line-height);
+  font-weight: var(--text-body-lg-weight);
+}
+
+/* News: the subtitle is Primary/800 like the title (group-c §3). */
+.section-head--text-primary-800 {
+  color: var(--color-primary-800);
+}
+
+/* Centred column (news at every width); the section's head class gives it its width. */
+.section-head--center {
+  align-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* Centred on mobile only (social; group-d §1). */
+@media (width < 768px) {
+  .section-head--center-mobile {
+    align-items: center;
+    margin-inline: auto;
+    text-align: center;
+  }
+}
+
+/* --- Button ---
+   Height comes from the padding and the line height (8 + 28 + 8 = 44 here); a smaller drawn
+   size (track 38, schedule 42, alert mobile 42) is a size modifier added by its section issue.
+   The 44×44 pointer target comes from the hit-area rule in Layout helpers. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) * 2.5);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-strong-sm-size);
+  line-height: var(--text-strong-sm-line-height);
+  font-weight: var(--text-strong-sm-weight);
+  text-align: center;
+  text-decoration: none;
+  text-underline-offset: var(--spacing);
+  color: inherit;
+  background-color: transparent;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.btn__icon {
+  display: block;
+  flex: none;
+}
+
+/* Track and schedule submit: white on Primary/800. */
+.btn--primary {
+  color: var(--color-white);
+  background-color: var(--color-primary-800);
+}
+
+.btn--primary:hover {
+  background-color: var(--color-primary-500);
+}
+
+/* Alert "Learn More": Primary/500 on Primary/50. */
+.btn--light {
+  color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+}
+
+.btn--light:hover {
+  background-color: var(--color-white);
+}
+
+/* Alert "Close": text only, Primary/50, with a white icon. */
+.btn--ghost {
+  color: var(--color-primary-50);
+}
+
+.btn--ghost .btn__icon {
+  color: var(--color-white);
+}
+
+.btn--ghost:hover {
+  text-decoration-line: underline;
+}
+
+/* After the hover rules, so a disabled button never lights up. */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: var(--color-white);
+  background-color: var(--color-grey-300);
+}
+
+/* --- Arrow link: text + arrow icon ("View all …", "Visit Our Linkedin Page") ---
+   The colour comes from the section (inherited). The icon is a 24px box, as Figma draws it. */
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line-height);
+  font-weight: var(--text-body-weight);
+  text-decoration: none;
+  text-underline-offset: var(--spacing);
+  color: inherit;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.arrow-link:hover,
+.arrow-link:focus-visible {
+  text-decoration-line: underline;
+}
+
+.arrow-link__icon {
+  display: block;
+  flex: none;
+}
+
+/* Social: underlined at rest, so hover changes the colour instead. */
+.arrow-link--underline {
+  text-decoration-line: underline;
+}
+
+.arrow-link--underline:hover,
+.arrow-link--underline:focus-visible {
+  color: var(--color-primary-500);
+}
+
+/* --- Card: the base of the industry, news and social cards ---
+   A column with the large radius that clips its image; it fills its carousel item (so a grid
+   column, too). The section's card class sets the look and the width; the item hugs it. */
+.card {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+  border-radius: var(--radius-lg);
+  overflow: clip;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* --- Carousel (industries, social, news below 768; Decision 8) ---
+   A native scroll-snap row: swipe, trackpad and shift-wheel work without script; the `carousel`
+   script adds the prev/next buttons' behaviour. The track starts at the container edge and bleeds
+   to the viewport's end edge; its end padding equals the bleed, so the last card stops at the
+   container's end edge. 100vw includes a classic scrollbar, so the track can reach under it:
+   the host sections clip that (below), which also keeps the page from scrolling sideways. */
+.industries,
+.news,
+.social {
+  /* The only overflow rule for these sections: their own blocks must not set overflow again. */
+  overflow-x: clip;
+}
+
+.carousel__track {
+  /* Container side padding plus the margin a centred container leaves beyond --container-max.
+     Internal to the carousel: sections never set it. */
+  --carousel-bleed: calc(var(--container-padding) + max(0px, (100vw - var(--container-max)) / 2));
+  display: flex;
+  gap: calc(var(--spacing) * 4);
+  /* 4px all round (with a matching negative margin) so a card's 2px focus ring + 2px offset is
+     not cut by the scroll container, the inline-start side at the container edge included. */
+  margin-block: calc(var(--spacing) * -1);
+  margin-inline: calc(var(--spacing) * -1) calc(var(--carousel-bleed) * -1);
+  padding-block: var(--spacing);
+  padding-inline: var(--spacing) var(--carousel-bleed);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: var(--spacing);
+  scrollbar-width: none;
+}
+
+.carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Positioned so absolutely placed content in a card (the visually hidden "(opens in a new tab)"
+   texts) scrolls and clips with the track instead of widening the page. */
+.carousel__item {
+  position: relative;
+  display: flex;
+  flex: none;
+  scroll-snap-align: start;
+}
+
+.carousel__controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: calc(var(--spacing) * 2);
+  margin-block-start: calc(var(--spacing) * 4);
+}
+
+/* No script, nothing for the buttons to do; nothing to scroll, no buttons needed. */
+:root:not(.js) .carousel__controls,
+.carousel.is-static .carousel__controls {
+  display: none;
+}
+
+/* Not drawn in Figma: a 40px circle with a 1px ring, filled on hover (docs/design-analysis.md →
+   Build decisions). The ends are aria-disabled (not disabled), so focus stays on the button. */
+.carousel__button {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--spacing) * 10);
+  block-size: calc(var(--spacing) * 10);
+  padding: 0;
+  border: var(--border-thin) solid currentColor;
+  border-radius: var(--radius-full);
+  color: var(--color-primary-800);
+  background-color: transparent;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.carousel__button:hover {
+  color: var(--color-white);
+  background-color: var(--color-primary-800);
+}
+
+.carousel__button[aria-disabled="true"] {
+  cursor: default;
+  color: var(--color-grey-300);
+  background-color: transparent;
+}
+
+.carousel__icon {
+  display: block;
+}
+
+/* The icon points to the end; prev is its mirror, and a right-to-left page swaps the two. */
+.carousel__button--prev .carousel__icon,
+:root[dir="rtl"] .carousel__button--next .carousel__icon {
+  transform: scaleX(-1);
+}
+
+:root[dir="rtl"] .carousel__button--prev .carousel__icon {
+  transform: none;
+}
+
+/* Card gap 16 on mobile, 20 from 768 (every carousel frame). News is a carousel below 768 only;
+   from 768 its three cards are a plain row (Decision 8). */
+@media (width >= 768px) {
+  .carousel__track {
+    gap: calc(var(--spacing) * 5);
+  }
+
+  .carousel--mobile-only .carousel__track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-inline-end: calc(var(--spacing) * -1);
+    padding-inline-end: var(--spacing);
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+
+  .carousel--mobile-only .carousel__controls {
+    display: none;
+  }
+}
+
+/* --- Pager (customer advisory; Decision 9) ---
+   One item at a time, a "n/total" counter and wrapping prev/next, all from the `pager` script.
+   Without it every item shows and the controls are hidden; with it, the first item shows from
+   the first paint (no flash of the others), and a single item needs no controls. */
+.pager {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2.5);
+}
+
+:root:not(.js) .pager,
+[data-pager].is-single .pager {
+  display: none;
+}
+
+.js [data-pager]:not(.is-ready) [data-pager-item] ~ [data-pager-item],
+[data-pager-item][hidden] {
+  display: none;
+}
+
+.pager__button {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--spacing) * 6);
+  block-size: calc(var(--spacing) * 6);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  color: var(--color-primary-500);
+  background-color: transparent;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.pager__button:hover {
+  color: var(--color-primary-800);
+}
+
+.pager__icon {
+  display: block;
+}
+
+/* The icon points to the start; next is its mirror, and a right-to-left page swaps the two. */
+.pager__button--next .pager__icon,
+:root[dir="rtl"] .pager__button--prev .pager__icon {
+  transform: scaleX(-1);
+}
+
+:root[dir="rtl"] .pager__button--next .pager__icon {
+  transform: none;
+}
+
+.pager__count {
+  font-size: var(--text-counter-size);
+  line-height: var(--text-counter-line-height);
+  font-weight: var(--text-counter-weight);
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  color: var(--color-primary-800);
 }
 
 /* ===== Header ===== */

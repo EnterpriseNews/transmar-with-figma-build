@@ -259,11 +259,154 @@
     return { init };
   })();
 
+  // ===== carousel =====
+  // Each [data-carousel] is a native scroll-snap row (swipe, trackpad and shift-wheel need no
+  // script). This part makes prev/next scroll the track itself by one card (never the page),
+  // marks the buttons aria-disabled at the ends (not `disabled`, which would drop keyboard focus)
+  // and adds `is-static` when nothing overflows, which hides the buttons. No autoplay (Decision 8).
+  const carousel = (() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let count = 0;
+
+    /**
+     * Wires one carousel.
+     * @param {HTMLElement} root the [data-carousel] element
+     */
+    const setup = (root) => {
+      const track = root.querySelector('[data-carousel-track]');
+      if (!track) return;
+      const prev = root.querySelector('[data-carousel-prev]');
+      const next = root.querySelector('[data-carousel-next]');
+      const buttons = [prev, next].filter(Boolean);
+      let frame = 0;
+
+      count += 1;
+      if (!track.id) track.id = `carousel-track-${count}`;
+      buttons.forEach((button) => button.setAttribute('aria-controls', track.id));
+
+      const items = () => Array.from(track.children).filter((el) => el.getClientRects().length);
+
+      // The distance between two neighbouring cards, measured, so any card width or gap works.
+      const step = () => {
+        const list = items();
+        if (list.length < 2) return track.clientWidth;
+        return Math.abs(list[1].getBoundingClientRect().left - list[0].getBoundingClientRect().left);
+      };
+
+      // How far the last card's start edge still is from the snap line (the track's start edge
+      // plus its scroll padding). A card wider than the track snaps there before the scroll end.
+      const lastCardDistance = (rtl) => {
+        const list = items();
+        if (!list.length) return 0;
+        const box = track.getBoundingClientRect();
+        const card = list[list.length - 1].getBoundingClientRect();
+        const padding = parseFloat(getComputedStyle(track).scrollPaddingInlineStart) || 0;
+        return rtl ? (box.right - padding) - card.right : card.left - (box.left + padding);
+      };
+
+      const update = () => {
+        frame = 0;
+        const rtl = getComputedStyle(track).direction === 'rtl';
+        const max = track.scrollWidth - track.clientWidth;
+        // scrollLeft runs negative on a right-to-left page; its size is the distance from the start.
+        const position = Math.abs(track.scrollLeft);
+        const atEnd = position >= max - 1 || lastCardDistance(rtl) <= 1;
+        root.classList.toggle('is-static', max <= 1);
+        if (prev) prev.setAttribute('aria-disabled', String(position <= 1));
+        if (next) next.setAttribute('aria-disabled', String(atEnd));
+      };
+
+      const schedule = () => {
+        if (!frame) frame = window.requestAnimationFrame(update);
+      };
+
+      /**
+       * Scrolls the track by one card.
+       * @param {1|-1} direction 1 towards the end, -1 towards the start
+       */
+      const move = (direction) => {
+        const rtl = getComputedStyle(track).direction === 'rtl';
+        track.scrollBy({
+          left: direction * (rtl ? -1 : 1) * step(),
+          behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        });
+      };
+
+      const onClick = (direction) => (event) => {
+        if (event.currentTarget.getAttribute('aria-disabled') === 'true') return;
+        move(direction);
+      };
+
+      if (prev) prev.addEventListener('click', onClick(-1));
+      if (next) next.addEventListener('click', onClick(1));
+      track.addEventListener('scroll', schedule, { passive: true });
+      // The track's size changes on resize and at the switch points, the cards' when an image or
+      // font arrives; either can start or stop the overflow.
+      if ('ResizeObserver' in window) {
+        const observer = new ResizeObserver(schedule);
+        observer.observe(track);
+        Array.from(track.children).forEach((item) => observer.observe(item));
+      } else {
+        window.addEventListener('resize', schedule);
+      }
+      window.addEventListener('load', schedule);
+      update();
+    };
+
+    /** Wires every [data-carousel] on the page. */
+    const init = () => {
+      document.querySelectorAll('[data-carousel]').forEach(setup);
+    };
+
+    return { init };
+  })();
+
+  // ===== pager =====
+  // Each [data-pager] shows one of its [data-pager-item]s at a time, with a "n/total" counter
+  // taken from the number of items in the HTML; prev/next wrap around (Decision 9). Without this
+  // part every item shows and the CSS hides the controls.
+  const pager = (() => {
+    /**
+     * Wires one pager.
+     * @param {HTMLElement} root the [data-pager] element
+     */
+    const setup = (root) => {
+      const items = Array.from(root.querySelectorAll('[data-pager-item]'));
+      if (!items.length) return;
+      const prev = root.querySelector('[data-pager-prev]');
+      const next = root.querySelector('[data-pager-next]');
+      const counter = root.querySelector('[data-pager-count]');
+      let current = 0;
+
+      /** @param {number} index any integer; wraps to the item list */
+      const show = (index) => {
+        current = (index + items.length) % items.length;
+        items.forEach((item, i) => { item.hidden = i !== current; });
+        if (counter) counter.textContent = `${current + 1}/${items.length}`;
+      };
+
+      if (prev) prev.addEventListener('click', () => show(current - 1));
+      if (next) next.addEventListener('click', () => show(current + 1));
+      root.classList.toggle('is-single', items.length < 2);
+      show(0);
+      root.classList.add('is-ready');
+    };
+
+    /** Wires every [data-pager] on the page. */
+    const init = () => {
+      document.querySelectorAll('[data-pager]').forEach(setup);
+    };
+
+    return { init };
+  })();
+
   // ===== start =====
   // Each later part adds itself to this list as [name, init]; parts may use `breakpoints`.
   const parts = [
     ['header-scroll', headerScroll.init],
     ['menu', menu.init],
+    ['carousel', carousel.init],
+    ['pager', pager.init],
   ];
 
   parts.forEach(([name, init]) => safeInit(name, init));
