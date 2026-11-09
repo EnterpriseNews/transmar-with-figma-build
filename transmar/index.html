@@ -244,14 +244,14 @@
           <!-- /CONTENT -->
         </div>
         <div class="track-card" data-tabs>
-          <div class="track-card__tabs" role="tablist">
+          <div class="track-card__tabs" data-tabs-list>
             <!-- CONTENT: track-banner tabs -->
-            <button class="track-card__tab" id="track-tab" type="button" role="tab" aria-selected="true" aria-controls="track-panel">Track</button>
-            <button class="track-card__tab" id="schedule-tab" type="button" role="tab" aria-selected="false" aria-controls="schedule-panel" tabindex="-1">Schedule</button>
+            <button class="track-card__tab" id="track-tab" type="button" aria-controls="track-panel" data-tabs-tab>Track</button>
+            <button class="track-card__tab" id="schedule-tab" type="button" aria-controls="schedule-panel" data-tabs-tab>Schedule</button>
             <!-- /CONTENT -->
           </div>
 
-          <div class="track-card__panel" id="track-panel" role="tabpanel" aria-labelledby="track-tab">
+          <div class="track-card__panel" id="track-panel" data-tabs-panel>
             <form class="track-form" action="#" data-validate>
               <fieldset class="track-form__by">
                 <!-- CONTENT: track-banner track-by -->
@@ -272,13 +272,13 @@
                   <p class="field__error" id="tracking-number-error" data-field-error></p>
                 </div>
                 <!-- CONTENT: track-banner track-button -->
-                <button class="btn btn--primary track-form__submit" type="submit">Track</button>
+                <button class="btn btn--primary btn--small track-form__submit" type="submit">Track</button>
                 <!-- /CONTENT -->
               </div>
             </form>
           </div>
 
-          <div class="track-card__panel" id="schedule-panel" role="tabpanel" aria-labelledby="schedule-tab">
+          <div class="track-card__panel" id="schedule-panel" data-tabs-panel>
             <form class="track-form track-form--schedule" action="#" data-validate>
               <div class="track-form__grid">
                 <div class="field">
@@ -295,7 +295,7 @@
                   <!-- /CONTENT -->
                   <p class="field__error" id="destination-port-error" data-field-error></p>
                 </div>
-                <div class="field">
+                <div class="field field--date">
                   <!-- CONTENT: track-banner schedule-field -->
                   <label class="field__label visually-hidden" for="search-date">Search date</label>
                   <input class="field__input" id="search-date" name="search-date" type="date" placeholder="Search date" aria-describedby="search-date-error">
@@ -311,7 +311,7 @@
                 </div>
               </div>
               <!-- CONTENT: track-banner schedule-button -->
-              <button class="btn btn--primary track-form__submit track-form__submit--wide" type="submit">View Schedule</button>
+              <button class="btn btn--primary btn--medium track-form__submit track-form__submit--wide" type="submit">View Schedule</button>
               <!-- /CONTENT -->
             </form>
           </div>
