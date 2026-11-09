@@ -259,11 +259,213 @@
     return { init };
   })();
 
+  // ===== carousel =====
+  // Each [data-carousel] is a native scroll-snap row (swipe, trackpad and shift-wheel need no
+  // script). This part makes prev/next scroll the track itself by one card (never the page),
+  // marks the buttons aria-disabled at the ends (not `disabled`, which would drop keyboard focus)
+  // and adds `is-static` when nothing overflows, which hides the buttons. A card that gets keyboard
+  // focus while partly hidden is scrolled fully into view, again on the track only. No autoplay
+  // (Decision 8).
+  const carousel = (() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let count = 0;
+
+    /**
+     * Wires one carousel.
+     * @param {HTMLElement} root the [data-carousel] element
+     */
+    const setup = (root) => {
+      const track = root.querySelector('[data-carousel-track]');
+      if (!track) return;
+      const prev = root.querySelector('[data-carousel-prev]');
+      const next = root.querySelector('[data-carousel-next]');
+      const buttons = [prev, next].filter(Boolean);
+      let frame = 0;
+
+      count += 1;
+      if (!track.id) track.id = `carousel-track-${count}`;
+      buttons.forEach((button) => button.setAttribute('aria-controls', track.id));
+
+      const items = () => Array.from(track.children).filter((el) => el.getClientRects().length);
+
+      // The distance between two neighbouring cards, measured, so any card width or gap works.
+      const step = () => {
+        const list = items();
+        if (list.length < 2) return track.clientWidth;
+        return Math.abs(list[1].getBoundingClientRect().left - list[0].getBoundingClientRect().left);
+      };
+
+      // How far the last card's start edge still is from the snap line (the track's start edge
+      // plus its scroll padding). A card wider than the track snaps there before the scroll end.
+      const lastCardDistance = (rtl) => {
+        const list = items();
+        if (!list.length) return 0;
+        const box = track.getBoundingClientRect();
+        const card = list[list.length - 1].getBoundingClientRect();
+        const padding = parseFloat(getComputedStyle(track).scrollPaddingInlineStart) || 0;
+        return rtl ? (box.right - padding) - card.right : card.left - (box.left + padding);
+      };
+
+      const update = () => {
+        frame = 0;
+        const rtl = getComputedStyle(track).direction === 'rtl';
+        const max = track.scrollWidth - track.clientWidth;
+        // scrollLeft runs negative on a right-to-left page; its size is the distance from the start.
+        const position = Math.abs(track.scrollLeft);
+        const atEnd = position >= max - 1 || lastCardDistance(rtl) <= 1;
+        root.classList.toggle('is-static', max <= 1);
+        if (prev) prev.setAttribute('aria-disabled', String(position <= 1));
+        if (next) next.setAttribute('aria-disabled', String(atEnd));
+      };
+
+      const schedule = () => {
+        if (!frame) frame = window.requestAnimationFrame(update);
+      };
+
+      /**
+       * Scrolls the track by one card.
+       * @param {1|-1} direction 1 towards the end, -1 towards the start
+       */
+      const move = (direction) => {
+        const rtl = getComputedStyle(track).direction === 'rtl';
+        track.scrollBy({
+          left: direction * (rtl ? -1 : 1) * step(),
+          behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        });
+      };
+
+      const onClick = (direction) => (event) => {
+        if (event.currentTarget.getAttribute('aria-disabled') === 'true') return;
+        move(direction);
+      };
+
+      /**
+       * Brings a keyboard-focused card fully into view by scrolling the track only. Chromium does
+       * not scroll a focused element that is already partly visible in its scroller, so a peeking
+       * card would keep focus while mostly hidden. The track moves to the nearest snap position
+       * (a card's start on the snap line) that shows the whole card and its focus ring, so the
+       * mandatory snap never pulls it back out of view.
+       * @param {FocusEvent} event
+       */
+      const onFocusIn = (event) => {
+        // Only keyboard focus: moving a card under the pointer between mousedown and mouseup
+        // would turn the click into a click on whatever slid in.
+        try {
+          if (!event.target.matches(':focus-visible')) return;
+        } catch (error) {
+          // A browser without :focus-visible gets the native focus scrolling only.
+          return;
+        }
+        const list = items();
+        const card = list.find((item) => item.contains(event.target));
+        if (!card) return;
+        const rtl = getComputedStyle(track).direction === 'rtl';
+        const box = track.getBoundingClientRect();
+        // Room for the 2px focus ring and its 2px offset, the same as the track's start padding.
+        const inset = parseFloat(getComputedStyle(track).scrollPaddingInlineStart) || 0;
+        const visibleStart = inset;
+        const visibleEnd = box.width - inset;
+        // Logical offsets from the track's start edge (its right edge on a right-to-left page).
+        const offset = (el) => {
+          const rect = el.getBoundingClientRect();
+          return rtl
+            ? { start: box.right - rect.right, end: box.right - rect.left }
+            : { start: rect.left - box.left, end: rect.right - box.left };
+        };
+        const target = offset(card);
+        if (target.start >= visibleStart - 1 && target.end <= visibleEnd + 1) return;
+
+        const position = Math.abs(track.scrollLeft);
+        const max = track.scrollWidth - track.clientWidth;
+        const fits = (delta) => target.start - delta >= visibleStart - 1
+          && target.end - delta <= visibleEnd + 1;
+        let best = null;
+        list.forEach((item) => {
+          // The distance that puts this card on the snap line, limited to the scroll range.
+          const raw = offset(item).start - visibleStart;
+          const delta = Math.min(Math.max(raw, -position), max - position);
+          if (fits(delta) && (best === null || Math.abs(delta) < Math.abs(best))) best = delta;
+        });
+        // A card wider than the track cannot fit: show its start.
+        if (best === null) best = target.start - visibleStart;
+        if (Math.abs(best) < 1) return;
+        track.scrollBy({
+          left: best * (rtl ? -1 : 1),
+          behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        });
+      };
+
+      if (prev) prev.addEventListener('click', onClick(-1));
+      if (next) next.addEventListener('click', onClick(1));
+      track.addEventListener('focusin', onFocusIn);
+      track.addEventListener('scroll', schedule, { passive: true });
+      // The track's size changes on resize and at the switch points, the cards' when an image or
+      // font arrives; either can start or stop the overflow.
+      if ('ResizeObserver' in window) {
+        const observer = new ResizeObserver(schedule);
+        observer.observe(track);
+        Array.from(track.children).forEach((item) => observer.observe(item));
+      } else {
+        window.addEventListener('resize', schedule);
+      }
+      window.addEventListener('load', schedule);
+      update();
+    };
+
+    /** Wires every [data-carousel] on the page. */
+    const init = () => {
+      document.querySelectorAll('[data-carousel]').forEach(setup);
+    };
+
+    return { init };
+  })();
+
+  // ===== pager =====
+  // Each [data-pager] shows one of its [data-pager-item]s at a time, with a "n/total" counter
+  // taken from the number of items in the HTML; prev/next wrap around (Decision 9). Without this
+  // part every item shows and the CSS hides the controls.
+  const pager = (() => {
+    /**
+     * Wires one pager.
+     * @param {HTMLElement} root the [data-pager] element
+     */
+    const setup = (root) => {
+      const items = Array.from(root.querySelectorAll('[data-pager-item]'));
+      if (!items.length) return;
+      const prev = root.querySelector('[data-pager-prev]');
+      const next = root.querySelector('[data-pager-next]');
+      const counter = root.querySelector('[data-pager-count]');
+      let current = 0;
+
+      /** @param {number} index any integer; wraps to the item list */
+      const show = (index) => {
+        current = (index + items.length) % items.length;
+        items.forEach((item, i) => { item.hidden = i !== current; });
+        if (counter) counter.textContent = `${current + 1}/${items.length}`;
+      };
+
+      if (prev) prev.addEventListener('click', () => show(current - 1));
+      if (next) next.addEventListener('click', () => show(current + 1));
+      root.classList.toggle('is-single', items.length < 2);
+      show(0);
+      root.classList.add('is-ready');
+    };
+
+    /** Wires every [data-pager] on the page. */
+    const init = () => {
+      document.querySelectorAll('[data-pager]').forEach(setup);
+    };
+
+    return { init };
+  })();
+
   // ===== start =====
   // Each later part adds itself to this list as [name, init]; parts may use `breakpoints`.
   const parts = [
     ['header-scroll', headerScroll.init],
     ['menu', menu.init],
+    ['carousel', carousel.init],
+    ['pager', pager.init],
   ];
 
   parts.forEach(([name, init]) => safeInit(name, init));
