@@ -14,6 +14,8 @@ The site lives in `transmar/`. Paths below are relative to it unless they start 
 
 Mobile-first: base styles are mobile; `@media (width >= 768px)` (tablet) and `@media (width >= 1200px)` (desktop) override. These are the only media-query widths. `(width < 768px)` only for a look that larger widths never use. JS reads `--breakpoint-tablet` / `--breakpoint-desktop` from `css/styles.css`, never px. The 1920 frame is not a breakpoint: build 1440 and let the container centre (Decision 4).
 
+**Exception (#8): the key-visual `<picture>`.** Its sources choose a file, not a layout: `kv-wide.webp` for `(width > 1440px)` (beyond `--container-max`, where Decision 12's wide art starts), `kv-desktop.webp` for `(width >= 768px)`, and `kv-mobile.webp` as the `<img>` fallback, in that order. The 1440 in that `media` attribute is the only width outside the two switch points; it must stay equal to `--container-max`. CSS media queries still use only 768 and 1200.
+
 **Match each frame exactly.** Where 375 differs from 1440 (sizes, order, centring, radius), build what 375 shows; copy follows desktop (Decision 6). Don't "normalise".
 
 ## Tokens (the only allowed values)
