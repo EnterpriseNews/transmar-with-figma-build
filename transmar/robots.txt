@@ -1,0 +1,5 @@
+# Every page may be indexed.
+# TODO(content): when the domain is known, uncomment the line below and put in the real domain.
+# Sitemap: https://example.com/sitemap.xml
+User-agent: *
+Allow: /
