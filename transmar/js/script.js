@@ -596,16 +596,16 @@
         const recheck = () => {
           if (field.getAttribute('aria-invalid') === 'true') check(field);
         };
-        field.addEventListener('input', recheck);
-        field.addEventListener('change', recheck);
+        // While a date is half-typed its `value` stays '' (also when it is cleared back to empty),
+        // so typing in it fires no input/change: its parts are also followed on keyup and blur.
+        const events = field.type === 'date' ? ['input', 'change', 'keyup', 'blur'] : ['input', 'change'];
+        events.forEach((name) => field.addEventListener(name, () => {
+          if (field.type === 'date') markEmpty(field);
+          recheck();
+        }));
       });
 
-      dates.forEach((field) => {
-        markEmpty(field);
-        field.addEventListener('input', () => markEmpty(field));
-        field.addEventListener('change', () => markEmpty(field));
-        field.addEventListener('blur', () => markEmpty(field));
-      });
+      dates.forEach(markEmpty);
       // The browser may restore field values when the page comes back from history.
       window.addEventListener('pageshow', () => dates.forEach(markEmpty));
     };

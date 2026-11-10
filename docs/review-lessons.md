@@ -39,6 +39,8 @@ The rules marked *(starter)* come from earlier figma-build sites; keep them unle
 - A control that is going away (the close button of a closing dialog) is hidden and stops taking clicks as soon as the close starts, not when its parent's transition ends, so it never covers or intercepts the control that comes back (from PR #25)
 - Changing the scroll position of an inner element (a tab row, a carousel) never scrolls the page: use `scrollTo` on the element itself and check that the page does not jump (watch scroll anchoring). *(starter)*
 - A scroller whose items can be partly visible (a peeking carousel card) brings a keyboard-focused item fully into view itself (`focusin` + `:focus-visible`, track only, to a snap position): browsers don't scroll an element that is already partly visible; test by tabbing through every item with the real item widths. (from PR #27)
+- A flagged field is re-checked on every way its state can change, not only on `input`/`change`: a date field going from half-typed to empty (or gaining parts while half-typed) keeps `value` at `''` and fires neither, so it is also re-checked on `keyup` and `blur`; test clearing a flagged partial date. (from PR #30)
+- A field's "empty/placeholder" look follows what the user types as they type it, not only on blur: for a date field, update `is-empty` from `value` and `validity.badInput` on `keyup` too, and check the colour of a half-typed date while it still has focus. (from PR #30)
 
 ## Performance and assets
 - Classes that change layout for JS (`js` on `<html>`) are set by the inline classic script in `<head>` before the stylesheet, never from the deferred script. *(starter)*
