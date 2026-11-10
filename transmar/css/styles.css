@@ -369,8 +369,15 @@ main:focus {
   transform: none;
 }
 
+/* Over the Primary/500 key visual a Primary/500 ring outside the chip cannot be seen; inside the
+   white chip it can (about 6:1). --focus-color itself stays as it is. */
+.skip-link:focus-visible {
+  outline-offset: calc(var(--spacing) * -1);
+}
+
 /* Small controls (header logo/EN/search/burger, menu close, footer logo/social, buttons, arrow
-   links, carousel and pager buttons) keep the size Figma draws (e.g. buttons 38, 42 or 44 tall),
+   links, carousel and pager buttons, track tabs and radios) keep the size Figma draws
+   (e.g. buttons 38, 42 or 44 tall),
    but their pointer target is at least 44×44 (docs/design.md → Focus). The ::before grows around
    the control's centre without moving anything; it never shrinks a larger control. Any
    non-static position keeps it working, so a section that has to place one of these absolutely
@@ -384,7 +391,9 @@ main:focus {
 .btn,
 .arrow-link,
 .carousel__button,
-.pager__button {
+.pager__button,
+.track-card__tab,
+.radio {
   position: relative;
 }
 
@@ -398,7 +407,9 @@ main:focus {
 .btn::before,
 .arrow-link::before,
 .carousel__button::before,
-.pager__button::before {
+.pager__button::before,
+.track-card__tab::before,
+.radio::before {
   content: "";
   position: absolute;
   inset-block: min(0px, (100% - var(--spacing) * 11) / 2);
@@ -551,6 +562,26 @@ main:focus {
 
 .btn--ghost:hover {
   text-decoration-line: underline;
+}
+
+/* Sizes Figma draws smaller than the 44 base: a fixed height with the label centred, so the 5px
+   and 7px block padding they imply stays off the spacing scale. The 44×44 ::before still gives
+   the pointer target. Small: 38 (Track). Medium: 42 from 768 (View Schedule, Schedule variant
+   597:8383), 38 below it, where the 375 frame draws the full-width card button 38 tall. */
+.btn--small {
+  block-size: calc(var(--spacing) * 9.5);
+  padding-block: 0;
+}
+
+.btn--medium {
+  block-size: calc(var(--spacing) * 9.5);
+  padding-block: 0;
+}
+
+@media (width >= 768px) {
+  .btn--medium {
+    block-size: calc(var(--spacing) * 10.5);
+  }
 }
 
 /* After the hover rules, so a disabled button never lights up. */
@@ -791,6 +822,124 @@ main:focus {
   color: var(--color-primary-800);
 }
 
+/* --- Text field: visually hidden label, input, error message (track and schedule forms) ---
+   36 tall (Figma), under the 44 in docs/design.md → Focus: an <input> cannot carry a ::before
+   hit area, and 36 × at least 122 meets WCAG 2.5.8 (Exception #11). The labels are visually
+   hidden, so the placeholder is the field's only visible label and is grey-700 (4.6:1), not
+   Figma's grey-300 (docs/design-analysis.md → Build decisions). */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  min-inline-size: 0;
+}
+
+.field__input {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: calc(var(--spacing) * 9);
+  margin: 0;
+  padding: 0 calc(var(--spacing) * 4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line-height);
+  font-weight: var(--text-caption-weight);
+  /* A placeholder longer than a narrow field (320px) reads as cut, not as clipped. */
+  text-overflow: ellipsis;
+  color: var(--color-primary-800);
+  background-color: var(--color-white);
+}
+
+.field__input::placeholder {
+  color: var(--color-grey-700);
+  opacity: 1;
+}
+
+/* An empty date field shows the browser's format text (mm/dd/yyyy), styled like a placeholder;
+   the form-validation script keeps `is-empty` in step with the value. */
+.field__input.is-empty {
+  color: var(--color-grey-700);
+}
+
+/* Weeks out: no spin buttons (not drawn); the arrow keys still step the value. */
+.field__input[type="number"] {
+  appearance: textfield;
+}
+
+.field__input[type="number"]::-webkit-inner-spin-button,
+.field__input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+/* Chromium focuses an inner part of a date field (e.g. on Shift+Tab), which never matches
+   :focus-visible on the input itself; the ring follows focus anywhere inside the field instead
+   (on mouse focus too, as a native date field has no separate keyboard state). */
+.field--date:focus-within .field__input {
+  outline: 2px solid var(--focus-color);
+  outline-offset: calc(var(--spacing) / 2);
+}
+
+/* Invalid: a 1px Primary/800 ring drawn inside, so the field keeps its size. */
+.field__input[aria-invalid="true"] {
+  box-shadow: inset 0 0 0 var(--border-thin) var(--color-primary-800);
+}
+
+.field__error {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line-height);
+  font-weight: var(--text-caption-weight);
+  color: var(--color-primary-800);
+}
+
+.field__error:empty {
+  display: none;
+}
+
+/* --- Radio: 14px circle + label (track-by) ---
+   Unchecked: a solid white circle; checked: a 1px Primary/500 ring around a Primary/500 dot (8,
+   Figma 7, on the spacing scale). The whole label is the target, grown to 44 tall by the hit-area
+   rule in Layout helpers. Forced colours get the native radio back. */
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing);
+  font-size: var(--text-radio-size);
+  line-height: var(--text-radio-line-height);
+  font-weight: var(--text-radio-weight);
+  color: var(--color-primary-800);
+  cursor: pointer;
+}
+
+.radio__input {
+  flex: none;
+  inline-size: calc(var(--spacing) * 3.5);
+  block-size: calc(var(--spacing) * 3.5);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--color-white);
+  appearance: none;
+  cursor: pointer;
+}
+
+/* Border-box keeps the circle 14: 1 ring + 2 gap + 8 dot + 2 gap + 1 ring. */
+.radio__input:checked {
+  padding: calc(var(--spacing) / 2);
+  border: var(--border-thin) solid var(--color-primary-500);
+  background-color: var(--color-primary-500);
+  background-clip: content-box;
+}
+
+@media (forced-colors: active) {
+  .radio__input {
+    appearance: auto;
+  }
+}
+
 /* ===== Header ===== */
 /* Transparent over the key visual (white content), white with Primary/500 content once the key
    visual has scrolled away (`is-scrolled`, set by the header-scroll script; Decision 11). Without
@@ -991,6 +1140,266 @@ main:focus {
 @media (width >= 1200px) {
   .site-nav {
     display: block;
+  }
+}
+
+/* ===== Key visual ===== */
+/* One composed picture per width (Decision 12), drawn at the section's height on flat
+   Primary/500, so the art never scales past its file and the section can grow with its content
+   (no JS: both forms stacked) without leaving a gap.
+   Placement: the art sits at the end edge when it fits there, otherwise at its start line and
+   overflows (clipped) at the end. Mobile: the start line is the viewport edge with no auto margin,
+   so the 375 art is pinned to the end (flex-end) and a narrower screen crops its flat blue start.
+   From 768 the start line is the container's outer edge: below 1440 the desktop art (1440) starts at the
+   viewport start, as at 1440; the wide art (1591, beyond 1440) starts with the container until it
+   fits at the end (about 1740 and wider, the 1920 frame). The heading so always sits on the art's
+   flat blue start. A flex auto margin does this without knowing the art's width: it pushes the
+   art to the end when there is room, and is 0 when there is none, leaving it at flex-start.
+   The art is not mirrored in a right-to-left page. */
+.key-visual {
+  position: relative;
+  overflow: clip;
+  /* 818 (375 frame) */
+  min-block-size: calc(var(--spacing) * 204.5);
+  background-color: var(--color-primary-500);
+}
+
+.key-visual__picture {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  max-inline-size: none;
+}
+
+.key-visual__image {
+  flex: none;
+  inline-size: auto;
+  max-inline-size: none;
+  block-size: 100%;
+}
+
+@media (width >= 768px) {
+  .key-visual {
+    /* 748 (1440 and 1920 frames) */
+    min-block-size: calc(var(--spacing) * 187);
+  }
+
+  .key-visual__picture {
+    justify-content: flex-start;
+    padding-inline-start: max(0px, (100% - var(--container-max)) / 2);
+  }
+
+  .key-visual__image {
+    margin-inline-start: auto;
+  }
+}
+
+/* ===== Track banner ===== */
+/* Title, slogan and the Track / Schedule card over the key visual (A §3). The top padding takes
+   the fixed header's place: 88 on mobile, 170 from 768. Mobile: centred heading, full-width card
+   centred under it; from 768: a 570 heading and a 522 card at the container's start edge. */
+.track-banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+  padding-block: calc(var(--spacing) * 22) calc(var(--spacing) * 10);
+}
+
+.track-banner__heading {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 1.5);
+  color: var(--color-white);
+  text-align: center;
+}
+
+.track-banner__title-line {
+  display: block;
+}
+
+/* The <br> keeps the two lines apart without CSS; with it, the block lines do that. */
+.track-banner__title br {
+  display: none;
+}
+
+.track-banner__title-line--1 {
+  font-size: var(--text-kv-title-1-size);
+  line-height: var(--text-kv-title-1-line-height);
+  font-weight: var(--text-kv-title-1-weight);
+}
+
+.track-banner__title-line--2 {
+  font-size: var(--text-kv-title-2-size);
+  line-height: var(--text-kv-title-2-line-height);
+  font-weight: var(--text-kv-title-2-weight);
+}
+
+.track-banner__slogan {
+  font-size: var(--text-kv-slogan-size);
+  line-height: var(--text-kv-slogan-line-height);
+  font-weight: var(--text-kv-slogan-weight);
+}
+
+/* "1979" is bold (700); the default `bolder` would only take the light slogan to 400. */
+.track-banner__slogan strong {
+  font-weight: var(--text-kv-title-2-weight);
+}
+
+/* --- Track card: tabs + one form at a time (Tracker wrapper 597:8366) --- */
+.track-card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  inline-size: 100%;
+  /* 522; also on the Schedule tab (drawn 502), so the card keeps its width when tabs switch. */
+  max-inline-size: calc(var(--spacing) * 130.5);
+  margin-inline: auto;
+  padding: calc(var(--spacing) * 4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-50);
+  box-shadow: var(--shadow-card);
+}
+
+.track-card__tabs {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-white);
+}
+
+/* Without the tabs script there is nothing to switch: both forms show, one under the other. */
+:root:not(.js) .track-card__tabs {
+  display: none;
+}
+
+/* Inactive: grey-700 (4.6:1), not Figma's grey-300, since an inactive tab is an operable control
+   (docs/design-analysis.md → Build decisions). Active: bold Primary/800. */
+.track-card__tab {
+  block-size: calc(var(--spacing) * 9.5);
+  padding: 0 calc(var(--spacing) * 2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line-height);
+  font-weight: var(--text-caption-weight);
+  color: var(--color-grey-700);
+  background-color: transparent;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.track-card__tab:hover,
+.track-card__tab[aria-selected="true"],
+.js [data-tabs]:not(.is-ready) .track-card__tab:first-child {
+  color: var(--color-primary-800);
+}
+
+.track-card__tab[aria-selected="true"],
+.js [data-tabs]:not(.is-ready) .track-card__tab:first-child {
+  font-weight: var(--text-caption-bold-weight);
+}
+
+/* Until the tabs script has run, only the first panel shows, so the first paint does not jump. */
+.js [data-tabs]:not(.is-ready) [data-tabs-panel] ~ [data-tabs-panel],
+[data-tabs-panel][hidden] {
+  display: none;
+}
+
+/* --- Track and schedule forms --- */
+.track-form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.track-form__by {
+  min-inline-size: 0;
+  /* Figma measures "Track By:" from a 9px text box; with the 20px line box the 16px gap becomes
+     10 above and below the legend (the text centres of the 1440 screenshot). */
+  margin: calc(var(--spacing) * -1.5) 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.track-form__legend {
+  padding: 0;
+  font-size: var(--text-caption-bold-size);
+  line-height: var(--text-caption-bold-line-height);
+  font-weight: var(--text-caption-bold-weight);
+  color: var(--color-primary-800);
+}
+
+/* Mobile: a wrapping row (three equal columns would leave about 72px per label at 375), 12 apart
+   so the three fit on one row at 375. Below about 360 a row wraps 28 lower, so the 44px hit areas
+   of two rows never overlap. */
+.track-form__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 7) calc(var(--spacing) * 3);
+  margin-block-start: calc(var(--spacing) * 2.5);
+}
+
+.track-form__row {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.track-form__submit {
+  inline-size: 100%;
+}
+
+.track-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 4) calc(var(--spacing) * 3);
+}
+
+@media (width >= 768px) {
+  .track-banner {
+    gap: calc(var(--spacing) * 5);
+    padding-block-start: calc(var(--spacing) * 42.5);
+  }
+
+  /* 569 in Figma, 570 on the scale. */
+  .track-banner__heading {
+    max-inline-size: calc(var(--spacing) * 142.5);
+    text-align: start;
+  }
+
+  .track-card {
+    margin-inline: 0;
+    padding: calc(var(--spacing) * 5);
+  }
+
+  .track-form__options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(var(--spacing) * 5);
+  }
+
+  /* Field and button side by side; the 36 field is centred on the 38 button (Figma) and stays
+     there when its error message appears under it. */
+  .track-form__row {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: calc(var(--spacing) * 3);
+  }
+
+  .track-form__field {
+    flex: 1;
+    padding-block-start: calc((var(--spacing) * 9.5 - var(--spacing) * 9) / 2);
+  }
+
+  .track-form__submit {
+    flex: none;
+    inline-size: calc(var(--spacing) * 30);
+  }
+
+  .track-form__submit--wide {
+    inline-size: 100%;
   }
 }
 

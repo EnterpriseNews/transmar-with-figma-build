@@ -459,6 +459,173 @@
     return { init };
   })();
 
+  // ===== tabs =====
+  // WAI-ARIA tabs with automatic activation: ←/→ (swapped right-to-left), Home and End move to a
+  // tab and show its panel. The HTML has no tab roles, so without this part nothing announces as
+  // a tab: the CSS hides the tab bar and every panel shows. Here the roles, aria-selected, the
+  // roving tabindex and each panel's aria-labelledby are added, the inactive panels get `hidden`,
+  // and [data-tabs] gets `is-ready` (before that, with JS, only the first panel shows).
+  const tabs = (() => {
+    /**
+     * Wires one tab set.
+     * @param {HTMLElement} root the [data-tabs] element
+     */
+    const setup = (root) => {
+      const list = root.querySelector('[data-tabs-list]');
+      const pairs = Array.from(root.querySelectorAll('[data-tabs-tab]'))
+        .map((tab) => ({ tab, panel: document.getElementById(tab.getAttribute('aria-controls')) }))
+        .filter(({ panel }) => panel && root.contains(panel));
+      if (!list || !pairs.length) return;
+
+      /**
+       * Shows one panel and makes its tab the only one in the Tab order.
+       * @param {number} index position in `pairs`
+       * @param {boolean} focus whether to move focus to the tab
+       */
+      const select = (index, focus) => {
+        pairs.forEach(({ tab, panel }, i) => {
+          const selected = i === index;
+          tab.setAttribute('aria-selected', String(selected));
+          tab.tabIndex = selected ? 0 : -1;
+          panel.hidden = !selected;
+        });
+        if (focus) pairs[index].tab.focus();
+      };
+
+      list.setAttribute('role', 'tablist');
+      pairs.forEach(({ tab, panel }, i) => {
+        tab.setAttribute('role', 'tab');
+        panel.setAttribute('role', 'tabpanel');
+        if (tab.id) panel.setAttribute('aria-labelledby', tab.id);
+        tab.addEventListener('click', () => select(i, false));
+      });
+
+      list.addEventListener('keydown', (event) => {
+        const current = pairs.findIndex(({ tab }) => tab === event.target);
+        if (current < 0) return;
+        const rtl = getComputedStyle(root).direction === 'rtl';
+        const last = pairs.length - 1;
+        let index;
+        if (event.key === 'ArrowRight') index = rtl ? current - 1 : current + 1;
+        else if (event.key === 'ArrowLeft') index = rtl ? current + 1 : current - 1;
+        else if (event.key === 'Home') index = 0;
+        else if (event.key === 'End') index = last;
+        else return;
+        event.preventDefault();
+        select((index + pairs.length) % pairs.length, true);
+      });
+
+      select(0, false);
+      root.classList.add('is-ready');
+    };
+
+    /** Wires every [data-tabs] on the page. */
+    const init = () => {
+      document.querySelectorAll('[data-tabs]').forEach(setup);
+    };
+
+    return { init };
+  })();
+
+  // ===== form-validation =====
+  // Each form[data-validate] is checked here instead of by the browser (`novalidate`), so the
+  // messages are the site's own (the data-label-* attributes of the one [data-validate-messages]
+  // element) and sit under their field (the element named by its aria-describedby, which carries
+  // [data-field-error]). An invalid submit is stopped and focus goes to the first invalid field; a
+  // flagged field is checked again as it changes; a valid form submits to its action (`#`). Date
+  // fields also get `is-empty` while they hold nothing, so their format text looks like a
+  // placeholder. Without this part the browser's own validation runs.
+  const formValidation = (() => {
+    let labels = {};
+
+    /**
+     * The message for a field's current state, or '' when it is valid.
+     * @param {HTMLInputElement} field
+     * @returns {string}
+     */
+    const messageFor = (field) => {
+      const { validity } = field;
+      if (validity.valid) return '';
+      if (validity.valueMissing) return labels.required || '';
+      if (field.type === 'date') return labels.invalidDate || '';
+      // Weeks out: a fraction (stepMismatch), 0 or less (rangeUnderflow) or junk (badInput).
+      if (field.type === 'number') return labels.weeksOut || '';
+      return labels.required || '';
+    };
+
+    /**
+     * Shows or clears a field's message and its aria-invalid state.
+     * @param {HTMLInputElement} field
+     * @returns {boolean} whether the field is valid
+     */
+    const check = (field) => {
+      const message = messageFor(field);
+      const error = (field.getAttribute('aria-describedby') || '').split(/\s+/)
+        .map((id) => (id ? document.getElementById(id) : null))
+        .find((element) => element && element.hasAttribute('data-field-error'));
+      if (error) error.textContent = message;
+      if (message) field.setAttribute('aria-invalid', 'true');
+      else field.removeAttribute('aria-invalid');
+      return !message;
+    };
+
+    /** @param {HTMLInputElement} field a date field */
+    const markEmpty = (field) => {
+      // A half-typed date has no value yet, but its text is the user's, not the format hint.
+      field.classList.toggle('is-empty', !field.value && !field.validity.badInput);
+    };
+
+    /**
+     * Wires one form.
+     * @param {HTMLFormElement} form
+     */
+    const setup = (form) => {
+      const fields = Array.from(form.querySelectorAll('input'))
+        .filter((field) => field.type !== 'radio' && field.type !== 'hidden');
+      const dates = fields.filter((field) => field.type === 'date');
+
+      form.noValidate = true;
+      form.addEventListener('submit', (event) => {
+        const invalid = fields.filter((field) => !check(field));
+        if (!invalid.length) return;
+        event.preventDefault();
+        invalid[0].focus();
+      });
+
+      fields.forEach((field) => {
+        const recheck = () => {
+          if (field.getAttribute('aria-invalid') === 'true') check(field);
+        };
+        // While a date is half-typed its `value` stays '' (also when it is cleared back to empty),
+        // so typing in it fires no input/change: its parts are also followed on keyup and blur.
+        const events = field.type === 'date' ? ['input', 'change', 'keyup', 'blur'] : ['input', 'change'];
+        events.forEach((name) => field.addEventListener(name, () => {
+          if (field.type === 'date') markEmpty(field);
+          recheck();
+        }));
+      });
+
+      dates.forEach(markEmpty);
+      // The browser may restore field values when the page comes back from history.
+      window.addEventListener('pageshow', () => dates.forEach(markEmpty));
+    };
+
+    /** Reads the messages and wires every form[data-validate] on the page. */
+    const init = () => {
+      const source = document.querySelector('[data-validate-messages]');
+      if (source) {
+        labels = {
+          required: source.getAttribute('data-label-required'),
+          invalidDate: source.getAttribute('data-label-invalid-date'),
+          weeksOut: source.getAttribute('data-label-weeks-out'),
+        };
+      }
+      document.querySelectorAll('form[data-validate]').forEach(setup);
+    };
+
+    return { init };
+  })();
+
   // ===== start =====
   // Each later part adds itself to this list as [name, init]; parts may use `breakpoints`.
   const parts = [
@@ -466,6 +633,8 @@
     ['menu', menu.init],
     ['carousel', carousel.init],
     ['pager', pager.init],
+    ['tabs', tabs.init],
+    ['form-validation', formValidation.init],
   ];
 
   parts.forEach(([name, init]) => safeInit(name, init));
